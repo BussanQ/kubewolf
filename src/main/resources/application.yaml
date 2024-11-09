@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: kubewolf
+k8s:
+  config: D:\Download\fsdownload\config
