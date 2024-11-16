@@ -1,9 +1,9 @@
-package com.bussanq.kubewolf.k8s.lib;
+package com.bussanq.kubewolf.common.k8s.lib;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
-import com.bussanq.kubewolf.k8s.model.K8sRes;
+import com.bussanq.kubewolf.common.k8s.model.K8sRes;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinitionNames;

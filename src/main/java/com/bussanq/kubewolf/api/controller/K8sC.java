@@ -1,6 +1,6 @@
 package com.bussanq.kubewolf.api.controller;
 
-import com.bussanq.kubewolf.k8s.lib.K8sService;
+import com.bussanq.kubewolf.common.k8s.lib.K8sService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

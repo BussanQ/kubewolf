@@ -1,4 +1,4 @@
-package com.bussanq.kubewolf.k8s.lib;
+package com.bussanq.kubewolf.common.k8s.lib;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;

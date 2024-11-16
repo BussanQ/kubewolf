@@ -1,4 +1,4 @@
-package com.bussanq.kubewolf.k8s.model;
+package com.bussanq.kubewolf.common.k8s.model;
 
 import io.fabric8.kubernetes.api.model.GenericKubernetesResource;
 import lombok.Data;

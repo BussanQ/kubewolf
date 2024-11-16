@@ -3,8 +3,6 @@ package com.bussanq.kubewolf.api.service;
 import com.bussanq.kubewolf.ai.service.AIService;
 import com.bussanq.kubewolf.api.model.TaskInfo;
 import com.bussanq.kubewolf.api.model.dto.ServingTask;
-import com.bussanq.kubewolf.common.utils.DbUtil;
-import com.bussanq.kubewolf.k8s.lib.K8sService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
