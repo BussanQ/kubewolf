@@ -1,5 +1,6 @@
 package com.bussanq.kubewolf.api.service;
 
+import com.bussanq.kubewolf.ai.service.AIService;
 import com.bussanq.kubewolf.api.model.TaskInfo;
 import com.bussanq.kubewolf.api.model.dto.ServingTask;
 import com.bussanq.kubewolf.common.utils.DbUtil;
@@ -16,16 +17,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class ServingService {
 
-    @Autowired(required = false)
-    K8sService k8sService;
+    @Autowired
+    AIService aiService;
 
-    public TaskInfo start (ServingTask task) {
-        String taskYaml = DbUtil.renderToYaml(task, task.getClass().getSimpleName());
-        if (k8sService.apply(taskYaml)) {
-            return new TaskInfo();
+    public boolean startTask(ServingTask task) {
+        TaskInfo taskInfo = aiService.startServingTask(task);
+        if (taskInfo == null) {
+            return false;
         }else {
-            log.error(taskYaml);
-            return null;
+            return true;
         }
     }
 
