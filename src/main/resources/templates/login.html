@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    #@header("登录页面")
+    <link rel="stylesheet" href="admin/css/other/login.css" />
+</head>
+<!-- 代 码 结 构 -->
+<body background="admin/images/background2.svg">
+<form class="layui-form" action="javascript:void(0);">
+    <div class="layui-form-item">
+        <img class="logo" src="admin/images/logo.png" />
+        <div class="title">AI Infra</div>
+    </div>
+    <div class="layui-form-item">
+        <input name="userName" value="admin" type="text" placeholder="请输入账户" value="admin" hover class="layui-input"  />
+    </div>
+    <div class="layui-form-item">
+        <input name="passWord" value="1234567" type="password" placeholder="请输入密码" hover class="layui-input"  />
+    </div>
+    <div class="layui-form-item">
+        <button class="pear-btn pear-btn-success login" lay-submit lay-filter="login">
+            登 入
+        </button>
+    </div>
+</form>
+#@footer()
+<script>
+    layui.use(['form','jquery','layer','hash'], function() {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+        var hash = layui.hash;
+
+        form.on('submit(login)', function(data){
+            let loader = layer.load();
+            $(".login").html("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop layui-icon-loading' />");
+            $.ajax({
+                url:'/login',
+                data:{
+                    "userName": data.field['userName'],
+                    "passWord": hash.sha256(data.field['passWord'])
+                },
+                type:"post",
+                dataType:'json',
+                success:function(result){
+                    layer.close(loader);
+                    if(result.code == 200){
+                        layer.msg(result.message,{icon:1,time:1000},function(){
+                            location.href = "/index";
+                        })
+                    }else{
+                        layer.msg(result.message,{icon:2,time:1000});
+                    }
+                    $(".login").html("登 录")
+                }
+            });
+            return false;
+        });
+    })
+</script>
+<!-- Session 过期处理 -->
+<script>
+    if(window!=top){ top.location.href = location.href; }
+</script>
+
+</body>
+</html>

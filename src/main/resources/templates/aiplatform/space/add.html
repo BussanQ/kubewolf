@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh" >
+<head>
+    #@header("新增在线环境")
+</head>
+<body>
+<form class="layui-form">
+    <div class="mainBox">
+        <div class="main-container layui-row">
+            <div class="layui-col-md6">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">环境名称:</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="envName" lay-verify="title" autocomplete="off" placeholder="请输入环境名称"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">基础镜像:</label>
+                    <div class="layui-input-block">
+                        <select name="baseImage" lay-filter="aihao">
+                            <option value=""></option>
+                            <option value="0">tensorflow:v0</option>
+                            <option value="1" >tensorflow:v1</option>
+                            <option value="2">tensorflow:v2</option>
+                            <option value="3">tensorflow:v3</option>
+                            <option value="4">tensorflow:v4</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">python版本:</label>
+                    <div class="layui-input-block">
+                        <select name="pythonVersion" lay-filter="aihao">
+                            <option value=""></option>
+                            <option value="0">python:v0</option>
+                            <option value="1">python:v1</option>
+                            <option value="2">python:v2</option>
+                            <option value="3">python:v3</option>
+                            <option value="4">python:v4</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">环境描述:</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="envDesc" lay-verify="title" autocomplete="off" placeholder="环境描述"
+                               class="layui-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="layui-btn layui-btn-normal layui-btn-sm" lay-submit=""
+                    lay-filter="management-save">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+#@footer()
+<script>
+
+    layui.use(['form', 'jquery', 'layer'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+
+        let prefix = "/space/";
+
+        form.on('submit(management-save)', function (data) {
+            $.ajax({
+                url: prefix + 'save',
+                data: JSON.stringify(data.field),
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'post',
+                success: function (result) {
+                    if (result.code == 200) {
+                        layer.msg(result.message, {icon: 1, time: 1000}, function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));
+                            parent.layui.table.reload("management-table");
+                        });
+                    } else {
+                        layer.msg(result.message, {icon: 2, time: 1000});
+                    }
+                }
+            })
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

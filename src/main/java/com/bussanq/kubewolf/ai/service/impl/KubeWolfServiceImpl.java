@@ -2,7 +2,7 @@ package com.bussanq.kubewolf.ai.service.impl;
 
 import com.bussanq.kubewolf.ai.service.AIService;
 import com.bussanq.kubewolf.api.model.TaskInfo;
-import com.bussanq.kubewolf.api.model.dto.ServingTask;
+import com.bussanq.kubewolf.api.model.dto.ServeTask;
 import com.bussanq.kubewolf.common.utils.DbUtil;
 import com.bussanq.kubewolf.common.k8s.lib.K8sService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ public class KubeWolfServiceImpl implements AIService {
     K8sService k8sService;
 
     @Override
-    public TaskInfo startServingTask (ServingTask task) {
+    public TaskInfo startServingTask (ServeTask task) {
         String taskYaml = DbUtil.renderToYaml(task, task.getClass().getSimpleName());
         if (k8sService.apply(taskYaml)) {
             return new TaskInfo();

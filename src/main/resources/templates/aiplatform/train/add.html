@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh" >
+<head>
+    #@header("新增训练任务")
+</head>
+<body>
+<form class="layui-form">
+    <div class="mainBox">
+        <div class="main-container layui-row">
+            <div class="layui-col-md6">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">任务名称：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="jobName" lay-verify="required" placeholder="请输入任务名称" class="layui-input" lay-required/>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">训练类型：</label>
+                    <div class="layui-input-block">
+                        <select name="jobType" lay-required>
+                            <option value=""></option>
+                            <option value="TFJob">TFJob</option>
+                            <option value="PyTorchJob">PyTorchJob</option>
+<!--                            <option value="mpijob">mpijob</option>-->
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">训练镜像：</label>
+                    <div class="layui-input-block">
+                       <!-- <select name="images" lay-required>
+                            <option value=""></option>
+                            <option value="0">tensorflow/tensorflow:1.11.0-gpu-py3</option>
+                            <option value="1">pythoch:1.0</option>
+                            <option value="2">mpi:1.0</option>
+                        </select>-->
+                        <input type="text" name="image" lay-verify="required" placeholder="请输入镜像名称" class="layui-input" lay-required/>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">代码git：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="testcode" placeholder="请输入代码git地址" class="layui-input"/>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">数据集：</label>
+                    <div class="layui-input-block">
+                         <select name="testdata" lay-required>
+                             <option value=""></option>
+                             <option value="imagenetf">imagenetf</option>
+                         </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">日志目录：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="logDir" placeholder="请输入日志目录" class="layui-input"/>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">节点数量：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="nodeCount" placeholder="请输入节点数量" class="layui-input"/>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">GPU数量：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="gpuCount" placeholder="请输入GPU数量" class="layui-input"/>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">启动命令：</label>
+                    <div class="layui-input-block">
+                        <textarea name="commandExec" placeholder="请输入启动命令" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md6">
+            <!--
+                <div class="layui-form-item">
+                    <label class="layui-form-label">启动参数：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="args" placeholder="请输入启动参数" class="layui-input"/>
+                    </div>
+                </div>
+                -->
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="layui-btn layui-btn-normal layui-btn-sm" lay-submit=""
+                    lay-filter="management-save">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+#@footer()
+<script>
+    layui.use(['form', 'jquery'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let prefix = "/api/v1/train/";
+        form.on('submit(management-save)', function (data) {
+            $.ajax({
+                url: prefix + 'create',
+                data: JSON.stringify(data.field),
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'post',
+                success: function (result) {
+                    if (result.code == 200) {
+                        layer.msg(result.message, {icon: 1, time: 1000}, function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));
+                            parent.layui.table.reload("management-table");
+                        });
+                    } else {
+                        layer.msg(result.message, {icon: 2, time: 1000});
+                    }
+                }
+            })
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

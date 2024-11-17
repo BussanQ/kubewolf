@@ -1,5 +1,10 @@
 spring:
   application:
     name: kubewolf
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://127.0.0.1:3306/bqinfra?allowMultiQueries=true&useUnicode=true&characterEncoding=utf8&useSSL=false&zeroDateTimeBehavior=convertToNull}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:bq}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 k8s:
   config: D:\Download\fsdownload\config

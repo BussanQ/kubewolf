@@ -1,7 +1,7 @@
 package com.bussanq.kubewolf.ai.service;
 
 import com.bussanq.kubewolf.api.model.TaskInfo;
-import com.bussanq.kubewolf.api.model.dto.ServingTask;
+import com.bussanq.kubewolf.api.model.dto.ServeTask;
 
 /**
  * @author bussanq
@@ -9,5 +9,5 @@ import com.bussanq.kubewolf.api.model.dto.ServingTask;
  */
 public interface AIService {
 
-    TaskInfo startServingTask(ServingTask task);
+    TaskInfo startServingTask(ServeTask task);
 }

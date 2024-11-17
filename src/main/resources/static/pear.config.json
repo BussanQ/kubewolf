@@ -1,0 +1,48 @@
+{
+	"logo": {
+		"title": "AI Infra",
+		"image": "admin/images/logo.png"
+	},
+	"menu": {
+		"data": "menu.json",
+		"accordion": true,
+		"control": false,
+		"select": "90031"
+	},
+	"tab": {
+		"muiltTab": true,
+		"keepState": true,
+		"tabMax": 30,
+		"index": {
+			"id": "90031",
+			"href": "/serve/main",
+			"title": "我的服务"
+		}
+	},
+	"theme": {
+		"defaultColor": "1",
+		"defaultMenu": "dark-theme",
+		"allowCustom": true
+	},
+	"colors": [{
+			"id": "1",
+			"color": "#F55720"
+		},
+		{
+			"id": "2",
+			"color": "#5FB878"
+		},
+		{
+			"id": "3",
+			"color": "#1E9FFF"
+		}, {
+			"id": "4",
+			"color": "#FFB800"
+		}, {
+			"id": "5",
+			"color": "darkgray"
+		}
+	],
+	"links": [
+	]
+}

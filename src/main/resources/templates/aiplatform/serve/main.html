@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    #@header("我的服务")
+</head>
+<body class="pear-container">
+
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <div class="layui-form-item layui-inline">
+                    <label class="layui-form-label">服务名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="jobName" lay-verify="title" autocomplete="off" placeholder="请输入服务名称" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-inline">
+                    <label class="layui-form-label">服务类型</label>
+                    <div class="layui-input-inline">
+<!--                        <input type="text" name="jobType" lay-verify="title" autocomplete="off" placeholder="请输入服务类型"-->
+<!--                               class="layui-input">-->
+                        <select name="jobType" lay-required>
+                            <option value=""></option>
+                            <option value="TFJob">TFJob</option>
+                            <option value="PyTorchJob">PyTorchJob</option>
+                            <!--                            <option value="mpijob">mpijob</option>-->
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-inline">
+                    <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="management-query">
+                        <i class="layui-icon layui-icon-search"></i>
+                        查询
+                    </button>
+                    <button type="reset" class="pear-btn pear-btn-md">
+                        <i class="layui-icon layui-icon-refresh"></i>
+                        重置
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="management-table" lay-filter="management-table"></table>
+
+        <script type="text/html" id="management-toolbar">
+            <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
+                <i class="layui-icon layui-icon-add-1"></i>
+                新增
+            </button>
+        </script>
+
+        <script type="text/html" id="management-bar">
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="run">
+                运行
+            </button>
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="stop">
+                停止
+            </button>
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="detail">
+                详情
+            </button>
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i
+                    class="layui-icon layui-icon-edit"></i>
+            </button>
+            <button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i
+                    class="layui-icon layui-icon-delete"></i>
+            </button>
+        </script>
+    </div>
+</div>
+#@footer()
+<script type="text/html" id="state-bar">
+    #[[ {{# if (d.jobStatus == "running") { }}
+    <button class="pear-btn pear-btn-sm pear-btn-success" >运行</button>
+    {{# } else if (d.jobStatus == "stopped") { }}
+    <button class="pear-btn pear-btn-sm pear-btn-danger" >停止</button>
+    {{# } else if (d.jobStatus == "failed") { }}
+    <button class="pear-btn pear-btn-sm pear-btn-danger" >失败</button>
+    {{# } else if (d.jobStatus == "succeeded") { }}
+    <button class="pear-btn pear-btn-sm pear-btn-success" >成功</button>
+    {{# } else {  }}
+    <button class="pear-btn pear-btn-sm pear-btn-warming" >调度</button>
+    {{# } }}
+    ]]#
+</script>
+<script>
+    layui.use(['table', 'form', 'jquery'], function () {
+        let table = layui.table;
+        let form = layui.form;
+        let $ = layui.jquery;
+        let prefix = "/api/v1/serve/";
+        let cols = [
+            [
+                {
+                    field: 'id',
+                    title: '服务编号',
+                    fixed: 'left',
+                    width: 160
+                },
+                {
+                    field: 'taskName',
+                    title: '服务名称',
+                    width: 160
+                },
+                {
+                    field: 'type',
+                    title: '服务类型',
+                    width: 160
+                },
+                {
+                    field: 'image',
+                    title: '服务镜像',
+                    width: 160
+                },
+                {
+                    // field: 'jobStatus',
+                    toolbar: '#state-bar', align: 'center', width: 90,
+                    title: '服务状态',
+                    width: 160
+                },
+                {
+                    field: 'code',
+                    templet: function(d){
+                        if (d.code !== undefined){
+                            return d.code.codeId;
+                        }else {
+                            return '';
+                        }
+                    },
+                    title: '代码地址',
+                    width: 160
+                },
+                {
+                    field: 'replicas',
+                    title: '实例数量',
+                    width: 160
+                },
+                {
+                    field: 'cpu',
+                    title: 'cpu',
+                    width: 160
+                },
+                {
+                    field: 'mem',
+                    title: '内存',
+                    width: 160
+                },
+                {
+                    field: 'gpu',
+                    title: 'gpu数量',
+                    width: 160
+                },
+                {
+                    field: 'modelPath',
+                    title: '模型路径',
+                    width: 160
+                },
+                {
+                    field: 'port',
+                    title: '端口号',
+                    width: 160
+                },
+                {
+                    field: 'cmd',
+                    title: '执行命令',
+                    width: 160
+                },
+                {
+                    field: 'createTime',
+                    title: '创建时间',
+                    width: 160
+                },
+                {title: '操作', toolbar: '#management-bar', align: 'center', width: 300, fixed: 'right'}
+            ]
+        ]
+
+        table.render({
+            elem: '#management-table',
+            url: prefix + 'list',
+            page: true,
+            cols: cols,
+            skin: 'line',
+            toolbar: '#management-toolbar',
+            request: {
+                pageName: 'pageNum', // 页码的参数名称，默认：page
+                limitName: 'pageSize' // 每页数据条数的参数名，默认：limit
+            },
+            parseData: function(res){
+                return {
+                    "code": res.code == 200? 0:res.code, // 解析接口状态
+                    "msg": res.message, // 解析提示文本
+                    "count": res.count, // 解析数据长度
+                    "data": res.data // 解析数据列表
+                };
+            },
+            defaultToolbar: [{
+                layEvent: 'refresh',
+                title: '刷新',
+                icon: 'layui-icon-refresh',
+            }, 'filter', 'print', 'exports']
+        });
+
+        table.on('tool(management-table)', function (obj) {
+            if (obj.event === 'remove') {
+                window.remove(obj);
+            } else if (obj.event === 'edit') {
+                window.edit(obj);
+            } else if (obj.event === 'run') {
+                window.run(obj);
+            } else if (obj.event === 'stop') {
+                window.stop(obj);
+            } else if (obj.event === 'detail') {
+                window.detail(obj);
+            }
+        });
+
+        table.on('toolbar(management-table)', function (obj) {
+            if (obj.event === 'add') {
+                window.add();
+            }
+        });
+
+        form.on('submit(management-query)', function (data) {
+            window.refresh(data.field);
+            return false;
+        });
+
+        window.add = function () {
+            layer.open({
+                type: 2,
+                title: '新增服务',
+                shade: 0.1,
+                area: ['880px','700px'],
+                content: '/train/add'
+            });
+        }
+
+        window.edit = function (obj) {
+            layer.open({
+                type: 2,
+                title: '修改服务',
+                shade: 0.1,
+                area: ['880px', '700px'],
+                content: '/train/edit?jobId=' + obj.data['jobId']
+            });
+        }
+
+        window.run = function (obj) {
+            let loading = layer.load();
+            $.ajax({
+                url: prefix + 'start',
+                data: JSON.stringify({
+                    jobId: obj.data['jobId']
+                }),
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'post',
+                success: function (result) {
+                    layer.close(loading);
+                    if (result.code == 200) {
+                        layer.msg(result.message, {icon: 1, time: 1000});
+                        window.refresh();
+                    } else {
+                        layer.msg(result.message, {icon: 2, time: 2000});
+                    }
+                }
+            });
+        }
+
+        window.stop = function (obj) {
+            let loading = layer.load();
+            $.ajax({
+                url: prefix + 'stop',
+                data: JSON.stringify({
+                    jobId: obj.data['jobId']
+                }),
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'post',
+                success: function (result) {
+                    layer.close(loading);
+                    if (result.code == 200) {
+                        layer.msg(result.message, {icon: 1, time: 1000});
+                        window.refresh();
+                    } else {
+                        layer.msg(result.message, {icon: 2, time: 2000});
+                    }
+                }
+            });
+        }
+
+        window.detail = function (obj) {
+            let loading = layer.load();
+            $.ajax({
+                url: prefix + 'tensorBoard',
+                data: JSON.stringify({
+                    jobId: obj.data['jobId']
+                }),
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'post',
+                success: function (result) {
+                    layer.close(loading);
+                    if (result.code == 200) {
+                        window.open(result.message);
+                    } else {
+                        layer.msg(result.message, {icon: 2, time: 2000});
+                    }
+                }
+            });
+        }
+
+        window.remove = function (obj) {
+            layer.confirm('确定要删除该服务', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: prefix + "delete",
+                    data: JSON.stringify({
+                        jobId: obj.data['jobId']
+                    }),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    type: 'post',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.code == 200) {
+                            layer.msg(result.message, {icon: 1, time: 1000}, function () {
+                                obj.del();
+                            });
+                        } else {
+                            layer.msg(result.message, {icon: 2, time: 1000});
+                        }
+                    }
+                })
+            });
+        }
+
+        window.refresh = function (param) {
+            table.reload('management-table', {where: param});
+        }
+    })
+</script>
+</body>
+</html>
