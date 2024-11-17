@@ -44,18 +44,9 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">数据集：</label>
+                    <label class="layui-form-label">端口：</label>
                     <div class="layui-input-block">
-                         <select name="testdata" lay-required>
-                             <option value=""></option>
-                             <option value="imagenetf">imagenetf</option>
-                         </select>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">日志目录：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="logDir" placeholder="请输入日志目录" class="layui-input"/>
+                        <input type="text" name="port" placeholder="请输入端口号" class="layui-input"/>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -73,19 +64,23 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">启动命令：</label>
                     <div class="layui-input-block">
-                        <textarea name="commandExec" placeholder="请输入启动命令" class="layui-textarea"></textarea>
+                        <textarea name="cmd" placeholder="请输入启动命令" class="layui-textarea"></textarea>
                     </div>
                 </div>
             </div>
             <div class="layui-col-md6">
-            <!--
                 <div class="layui-form-item">
-                    <label class="layui-form-label">启动参数：</label>
+                    <label class="layui-form-label">环境变量：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="args" placeholder="请输入启动参数" class="layui-input"/>
+                        <input type="text" name="args" placeholder="请输入环境变量" class="layui-input"/>
                     </div>
                 </div>
-                -->
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">模型路径：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="logDir" placeholder="请输入日志目录" class="layui-input"/>
+                </div>
             </div>
         </div>
     </div>

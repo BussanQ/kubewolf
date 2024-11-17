@@ -1,9 +1,12 @@
 package com.bussanq.kubewolf.web.config;
 
+import com.bussanq.kubewolf.common.utils.ServletUtl;
 import com.bussanq.kubewolf.web.res.ResultJson;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.concurrent.ExecutionException;
 
@@ -22,16 +25,16 @@ public class ExceptHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResultJson exception(Exception e) {
-        /*ajax
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("exception", e.getMessage());
-        modelAndView.setViewName("error/500");
-        return modelAndView;*/
+    public Object exception(Exception e, HttpServletRequest request) {
         log.error("", e);
-        return ResultJson.error("内部错误");
+        if (ServletUtl.isAjax(request)){
+            return ResultJson.error("内部错误");
+        }else {
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.addObject("exception", e.getMessage());
+            modelAndView.setViewName("error/500");
+            return modelAndView;
+        }
     }
-
-
 
 }
