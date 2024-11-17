@@ -6,5 +6,9 @@ spring:
     username: ${MYSQL_USERNAME:root}
     password: ${MYSQL_PASSWORD:bq}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 10
+      maximum-pool-size: 10
+      max-lifetime: 300000
 k8s:
   config: D:\Download\fsdownload\config

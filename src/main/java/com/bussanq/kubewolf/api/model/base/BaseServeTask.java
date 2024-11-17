@@ -9,13 +9,13 @@ import com.jfinal.plugin.activerecord.IBean;
 @SuppressWarnings({"serial", "unchecked"})
 public abstract class BaseServeTask<M extends BaseServeTask<M>> extends Model<M> implements IBean {
 
-	public M setId(java.lang.Integer id) {
-		set("id", id);
+	public M setTaskId(java.lang.String taskId) {
+		set("task_id", taskId);
 		return (M)this;
 	}
 	
-	public java.lang.Integer getId() {
-		return getInt("id");
+	public java.lang.String getTaskId() {
+		return getStr("task_id");
 	}
 	
 	public M setTaskName(java.lang.String taskName) {

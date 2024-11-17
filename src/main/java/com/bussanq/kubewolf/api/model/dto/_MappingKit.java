@@ -16,7 +16,7 @@ import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 public class _MappingKit {
 	
 	public static void mapping(ActiveRecordPlugin arp) {
-		arp.addMapping("serve_task", "id", ServeTask.class);
+		arp.addMapping("serve_task", "task_id", ServeTask.class);
 	}
 }
 
