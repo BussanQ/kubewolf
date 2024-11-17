@@ -27,8 +27,27 @@ public class ServingC {
     }
 
     @PostMapping("/start")
-    public String start(@RequestBody ServeTaskReq taskReq) {
+    public ResultJson start(@RequestBody ServeTaskReq taskReq) {
+        return ResultJson.res(serveService.start(taskReq));
+    }
 
-        return "";
+    @PostMapping("/stop")
+    public ResultJson stop(@RequestBody ServeTaskReq taskReq) {
+        return ResultJson.res(serveService.stop(taskReq));
+    }
+
+    @PostMapping("/delete")
+    public ResultJson delete(@RequestBody ServeTaskReq taskReq) {
+        return ResultJson.res(serveService.delete(taskReq));
+    }
+
+    @PostMapping("/update")
+    public ResultJson update(@RequestBody ServeTask serveTask) {
+        return ResultJson.res(serveService.update(serveTask));
+    }
+
+    @PostMapping("/create")
+    public ResultJson save(@RequestBody ServeTask serveTask) {
+        return ResultJson.res(serveService.save(serveTask), serveTask.getTaskId());
     }
 }

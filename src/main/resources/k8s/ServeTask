@@ -1,0 +1,133 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    bussanq.com/version: v1.0
+  labels:
+    app: kubewolf
+    kubewolf: ServeTask
+    resource_name: #(task_name)
+  name: #(task_name)
+  namespace: #(namespace ?? "default")
+spec:
+  replicas: #(replicas)
+  selector:
+    matchLabels:
+      resource_name: #(task_name)
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        bussanq.com/pod: servepod
+      labels:
+        app: kubewolf
+        resource_name: #(task_name)
+    spec:
+      tolerations:
+      - key: "bussanq.com/run"
+        operator: "Exists"
+        effect: "NoSchedule"
+      containers:
+        - image: '#(image)'
+          #if(cmd)
+          command:
+           - sh
+           - -c
+           - #(cmd)
+          #end
+          imagePullPolicy: IfNotPresent
+          name: #(task_name)
+          resources:
+            limits:
+              memory: #(mem ?? 16000)Mi
+              #if(gpu)
+              #(gpuPluginType): #(gpu)
+              #end
+            requests:
+              cpu: #(cpu ?? 500)m
+              memory: #(mem ?? 500)Mi
+              #if(gpu)
+              #(gpuPluginType): #(gpu)
+              #end
+          volumeMounts:
+            - mountPath: /etc/localtime
+              name: localtime
+              readOnly: true
+            #if(model_path)
+            - name: data
+              subPath:
+              mountPath: /data
+            #end
+            #if(code_repo)
+            - mountPath: #(mount_path)
+              name: code-sync
+            #end
+          #if(env)
+          env:
+            #for(x : env.split(";"))
+            - name: "#(x.split(":")[0])"
+              value: "#(x.substring(x.indexOf(":")+1))"
+            #end
+          #end
+      #if(code_repo)
+      initContainers:
+      - env:
+        #if(git_username)
+        - name: GIT_USERNAME
+          value: #(git_username)
+        - name: GIT_PASSWORD
+          value: #(git_password)
+        #end
+        - name: GIT_SYNC_REPO
+          value: #(code_repo)
+        - name: GIT_SYNC_ROOT
+          value: /code
+        - name: GIT_SYNC_DEST
+          value: #(project_name)
+        - name: GIT_SYNC_ONE_TIME
+          value: "true"
+        image: #(image_repo)/git-sync:go
+        imagePullPolicy: IfNotPresent
+        name: init-code
+        resources: {}
+        volumeMounts:
+        - mountPath: /code
+          name: code-sync
+      #end
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      volumes:
+        - hostPath:
+            path: /etc/localtime
+            type: ''
+          name: localtime
+        #if(model_path)
+        - name: data
+          persistentVolumeClaim:
+            claimName: data
+        #end
+        - emptyDir: {}
+          name: code-sync
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    resource_name: #(task_name)
+  name: #(task_name)
+  namespace: #(namespace ?? "default")
+spec:
+  ports:
+    - name: appservice
+      port: #(port ?? 80)
+      protocol: TCP
+      targetPort: #(port ?? 80)
+  selector:
+    resource_name: #(task_name)
+  type: NodePort

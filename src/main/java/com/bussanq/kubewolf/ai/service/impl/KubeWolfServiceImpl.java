@@ -21,7 +21,7 @@ public class KubeWolfServiceImpl implements AIService {
     K8sService k8sService;
 
     @Override
-    public TaskInfo startServingTask (ServeTask task) {
+    public TaskInfo startServing(ServeTask task) {
         String taskYaml = DbUtil.renderToYaml(task, task.getClass().getSimpleName());
         if (k8sService.apply(taskYaml)) {
             return new TaskInfo();
@@ -29,5 +29,11 @@ public class KubeWolfServiceImpl implements AIService {
             log.error(taskYaml);
             return null;
         }
+    }
+
+    @Override
+    public boolean stopServing(ServeTask task) {
+        String taskYaml = DbUtil.renderToYaml(task, task.getClass().getSimpleName());
+        return k8sService.delete(taskYaml);
     }
 }

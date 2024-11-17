@@ -97,7 +97,7 @@
         let cols = [
             [
                 {
-                    field: 'id',
+                    field: 'taskId',
                     title: '服务编号',
                     fixed: 'left',
                     width: 160
@@ -236,7 +236,7 @@
                 title: '新增服务',
                 shade: 0.1,
                 area: ['880px','700px'],
-                content: '/train/add'
+                content: '/serve/add'
             });
         }
 
@@ -246,7 +246,7 @@
                 title: '修改服务',
                 shade: 0.1,
                 area: ['880px', '700px'],
-                content: '/train/edit?jobId=' + obj.data['jobId']
+                content: '/train/edit?taskId=' + obj.data['taskId']
             });
         }
 
@@ -255,7 +255,7 @@
             $.ajax({
                 url: prefix + 'start',
                 data: JSON.stringify({
-                    jobId: obj.data['jobId']
+                    taskId: obj.data['taskId']
                 }),
                 dataType: 'json',
                 contentType: 'application/json',
@@ -277,7 +277,7 @@
             $.ajax({
                 url: prefix + 'stop',
                 data: JSON.stringify({
-                    jobId: obj.data['jobId']
+                    taskId: obj.data['taskId']
                 }),
                 dataType: 'json',
                 contentType: 'application/json',

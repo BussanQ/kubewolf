@@ -54,14 +54,14 @@ public class K8sService {
 
     public boolean apply (String yaml) {
         try {
+            List<HasMetadata> data;
             InputStream stream = IoUtil.toStream(yaml, Charset.defaultCharset());
             if (StrUtil.contains(yaml, "namespace")) {
-                client.load(stream).serverSideApply();
-//            client.load(stream).createOrReplace();
+                data = client.load(stream).serverSideApply();
             }else {
-                client.load(stream).inNamespace(currentNamespace).serverSideApply();
+                data = client.load(stream).inNamespace(currentNamespace).serverSideApply();
             }
-            return true;
+            return !data.isEmpty();
         }catch (Exception e) {
             log.error("执行apply异常", e);
             return false;
@@ -83,8 +83,13 @@ public class K8sService {
     public boolean delete (String yaml) {
         try {
             InputStream stream = IoUtil.toStream(yaml, Charset.defaultCharset());
-            List<StatusDetails> statusDetails = client.load(stream).delete();
-            return true;
+            List<StatusDetails> statusDetails;
+            if (StrUtil.contains(yaml, "namespace")) {
+                statusDetails = client.load(stream).delete();
+            }else {
+                statusDetails = client.load(stream).inNamespace(currentNamespace).delete();
+            }
+            return !statusDetails.isEmpty();
         }catch (Exception e) {
             log.error("执行delete异常", e);
             return false;
@@ -153,7 +158,7 @@ public class K8sService {
     public String getPort (String name, String namespace) {
         Service service = client.services().inNamespace(namespace).withName(name).get();
         if (service != null) {
-            return service.getSpec().getPorts().get(0).getPort().toString();
+            return service.getSpec().getPorts().getFirst().getPort().toString();
         }
         return null;
     }

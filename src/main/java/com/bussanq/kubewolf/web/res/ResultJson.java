@@ -12,11 +12,25 @@ public class ResultJson extends Kv {
     private ResultJson() {
     }
 
+    public static ResultJson res(boolean res) {
+        return res ? ok():error();
+    }
+
+    public static ResultJson res(boolean res, Object data) {
+        return res ? ok(data):error();
+    }
+
     /**
      * 返回成功
      */
     public static ResultJson ok() {
         return ok("操作成功");
+    }
+
+    public static ResultJson ok(Object data) {
+        ResultJson res = ok();
+        res.set("data", data);
+        return res;
     }
 
     /**

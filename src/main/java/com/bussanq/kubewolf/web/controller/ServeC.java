@@ -20,5 +20,10 @@ public class ServeC {
     public String main() {
         return prefix + "/main";
     }
+
+    @GetMapping("/add")
+    public String add() {
+        return prefix + "/add";
+    }
     
 }

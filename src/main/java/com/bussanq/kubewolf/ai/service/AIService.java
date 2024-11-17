@@ -9,5 +9,6 @@ import com.bussanq.kubewolf.api.model.dto.ServeTask;
  */
 public interface AIService {
 
-    TaskInfo startServingTask(ServeTask task);
+    TaskInfo startServing(ServeTask task);
+    boolean stopServing(ServeTask task);
 }
