@@ -75,14 +75,14 @@
 </div>
 #@footer()
 <script type="text/html" id="state-bar">
-    #[[ {{# if (d.jobStatus == "running") { }}
+    #[[ {{# if (d.status == "running") { }}
     <button class="pear-btn pear-btn-sm pear-btn-success" >运行</button>
-    {{# } else if (d.jobStatus == "stopped") { }}
+    {{# } else if (d.status == "stopped") { }}
     <button class="pear-btn pear-btn-sm pear-btn-danger" >停止</button>
-    {{# } else if (d.jobStatus == "failed") { }}
+    {{# } else if (d.status == "error") { }}
     <button class="pear-btn pear-btn-sm pear-btn-danger" >失败</button>
-    {{# } else if (d.jobStatus == "succeeded") { }}
-    <button class="pear-btn pear-btn-sm pear-btn-success" >成功</button>
+    {{# } else if (d.status == "pending") { }}
+    <button class="pear-btn pear-btn-sm pear-btn-warming" >调度</button>
     {{# } else {  }}
     <button class="pear-btn pear-btn-sm pear-btn-warming" >调度</button>
     {{# } }}
@@ -118,7 +118,6 @@
                     width: 160
                 },
                 {
-                    // field: 'jobStatus',
                     toolbar: '#state-bar', align: 'center', width: 90,
                     title: '服务状态',
                     width: 160
@@ -168,6 +167,21 @@
                 {
                     field: 'cmd',
                     title: '执行命令',
+                    width: 160
+                },
+                {
+                    field: 'env',
+                    title: '环境变量',
+                    width: 160
+                },
+                {
+                    field: 'inUrl',
+                    title: '内部访问地址',
+                    width: 160
+                },
+                {
+                    field: 'outUrl',
+                    title: '外部访问地址',
                     width: 160
                 },
                 {
@@ -245,8 +259,8 @@
                 type: 2,
                 title: '修改服务',
                 shade: 0.1,
-                area: ['880px', '700px'],
-                content: '/train/edit?taskId=' + obj.data['taskId']
+                area: ['1000px', '700px'],
+                content: '/serve/edit?taskId=' + obj.data['taskId']
             });
         }
 
@@ -299,7 +313,7 @@
             $.ajax({
                 url: prefix + 'tensorBoard',
                 data: JSON.stringify({
-                    jobId: obj.data['jobId']
+                    taskId: obj.data['taskId']
                 }),
                 dataType: 'json',
                 contentType: 'application/json',
@@ -322,7 +336,7 @@
                 $.ajax({
                     url: prefix + "delete",
                     data: JSON.stringify({
-                        jobId: obj.data['jobId']
+                        taskId: obj.data['taskId']
                     }),
                     dataType: 'json',
                     contentType: 'application/json',

@@ -1,7 +1,6 @@
 package com.bussanq.kubewolf.api.model;
 
 import lombok.Data;
-import org.springframework.stereotype.Service;
 
 /**
  * @author bussanq
@@ -9,5 +8,8 @@ import org.springframework.stereotype.Service;
  */
 @Data
 public class TaskInfo {
-    Service name;
+    String name;
+    String status;
+    String inUrl;
+    String outUrl;
 }

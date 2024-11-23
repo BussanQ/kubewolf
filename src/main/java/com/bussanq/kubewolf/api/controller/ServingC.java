@@ -1,5 +1,6 @@
 package com.bussanq.kubewolf.api.controller;
 
+import com.bussanq.kubewolf.api.model.TaskInfo;
 import com.bussanq.kubewolf.api.model.dto.ServeTask;
 import com.bussanq.kubewolf.api.service.ServeService;
 import com.bussanq.kubewolf.web.model.vo.ServeTaskReq;
@@ -8,6 +9,10 @@ import com.bussanq.kubewolf.web.res.ResultTable;
 import com.jfinal.plugin.activerecord.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author bussanq
@@ -23,6 +28,19 @@ public class ServingC {
     @GetMapping("/list")
     public ResultJson list(ServeTask serveTask, Page page) {
         Page<ServeTask> datas = serveService.list(serveTask, page);
+        List<TaskInfo> taskInfos = serveService.listWithStatus();
+        Map<String, String> statusMap = new HashMap<>();
+        for (TaskInfo taskInfo : taskInfos) {
+            statusMap.put(taskInfo.getName(), taskInfo.getStatus().toLowerCase());
+        }
+        for (ServeTask task : datas.getList()){
+            String taskName = task.getTaskName();
+            if (statusMap.containsKey(taskName)) {
+                task.setStatus(statusMap.get(taskName));
+            }else {
+                task.setStatus("stopped");
+            }
+        }
         return ResultTable.ok(datas.getTotalRow(), datas.getList());
     }
 

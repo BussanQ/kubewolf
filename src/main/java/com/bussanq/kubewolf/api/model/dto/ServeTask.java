@@ -8,5 +8,15 @@ import com.bussanq.kubewolf.api.model.base.BaseServeTask;
 @SuppressWarnings("serial")
 public class ServeTask extends BaseServeTask<ServeTask> {
 	public static final ServeTask dao = new ServeTask().dao();
+
+	private String status;
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }
 

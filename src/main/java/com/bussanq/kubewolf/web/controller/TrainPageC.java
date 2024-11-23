@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/train")
 @Slf4j
-public class TrainC {
+public class TrainPageC {
 
     private String prefix = "aiplatform/train";
     

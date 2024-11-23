@@ -12,3 +12,4 @@ spring:
       max-lifetime: 300000
 k8s:
   config: D:\Download\fsdownload\config
+  namespace: default

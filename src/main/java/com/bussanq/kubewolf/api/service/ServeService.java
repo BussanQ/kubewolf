@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author bussanq
@@ -78,6 +79,10 @@ public class ServeService {
         Kv condition = Kv.by("task_name=", serveTask.getTaskName()).set("type=", serveTask.getType());
         Page<ServeTask> datas = DbUtil.searchPage(ServeTask.dao, condition, page);
         return datas;
+    }
+
+    public List<TaskInfo> listWithStatus() {
+        return aiService.listServing();
     }
 
     public boolean start(ServeTaskReq taskReq) {

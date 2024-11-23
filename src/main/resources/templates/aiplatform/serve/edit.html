@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh" >
 <head>
-    #@header("新增服务")
+    #@header("修改服务")
 </head>
 <body>
 <form class="layui-form">
     <div class="mainBox">
         <div class="main-container layui-row">
             <div class="layui-col-md6">
+                <input name="taskId" value="#(serveTask.taskId)" type="hidden">
                 <div class="layui-form-item">
                     <label class="layui-form-label">服务名称：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="taskName" lay-verify="required" placeholder="请输入服务名称" class="layui-input" lay-required/>
+                        <input type="text" name="taskName" value="#(serveTask.taskName)"
+                               lay-verify="required" placeholder="请输入服务名称" class="layui-input" lay-required/>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -27,13 +29,8 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">镜像：</label>
                     <div class="layui-input-block">
-                       <!-- <select name="images" lay-required>
-                            <option value=""></option>
-                            <option value="0">tensorflow/tensorflow:1.11.0-gpu-py3</option>
-                            <option value="1">pythoch:1.0</option>
-                            <option value="2">mpi:1.0</option>
-                        </select>-->
-                        <input type="text" name="image" lay-verify="required" placeholder="请输入镜像名称" class="layui-input" lay-required/>
+                        <input type="text" name="image" value="#(serveTask.image)"
+                               lay-verify="required" placeholder="请输入镜像名称" class="layui-input" lay-required/>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -45,25 +42,29 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">端口：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="port" placeholder="请输入端口号" class="layui-input"/>
+                        <input type="text" name="port"  value="#(serveTask.port)"
+                               placeholder="请输入端口号" class="layui-input"/>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">实例数量：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="replicas" placeholder="请输入实例数量" class="layui-input"/>
+                        <input type="text" name="replicas"  value="#(serveTask.replicas)"
+                               placeholder="请输入实例数量" class="layui-input"/>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">GPU数量：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="gpu" placeholder="请输入GPU数量" class="layui-input"/>
+                        <input type="text" name="gpu"  value="#(serveTask.gpu)"
+                               placeholder="请输入GPU数量" class="layui-input"/>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">启动命令：</label>
                     <div class="layui-input-block">
-                        <textarea name="cmd" placeholder="请输入启动命令" class="layui-textarea"></textarea>
+                        <textarea name="cmd"  value="#(serveTask.cmd)"
+                                  placeholder="请输入启动命令" class="layui-textarea"></textarea>
                     </div>
                 </div>
             </div>
@@ -71,20 +72,23 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">环境变量：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="env" placeholder="请输入环境变量" class="layui-input"/>
+                        <input type="text" name="env"  value="#(serveTask.env)"
+                               placeholder="请输入环境变量" class="layui-input"/>
                     </div>
                 </div>
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">CPU：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="cpu" placeholder="请输入cpu" class="layui-input"/>
+                        <input type="text" name="cpu" value="#(serveTask.cpu)"
+                               placeholder="请输入cpu" class="layui-input"/>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">内存：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="mem" placeholder="请输入内存" class="layui-input"/>
+                        <input type="text" name="mem" value="#(serveTask.mem)"
+                               placeholder="请输入内存" class="layui-input"/>
                     </div>
                 </div>
             </div>
@@ -92,7 +96,8 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">模型路径：</label>
                 <div class="layui-input-block">
-                    <input type="text" name="modelPath" placeholder="请输入日志目录" class="layui-input"/>
+                    <input type="text" name="modelPath" value="#(serveTask.modelPath)"
+                           placeholder="请输入日志目录" class="layui-input"/>
                 </div>
             </div>
         </div>
@@ -117,9 +122,11 @@
         let form = layui.form;
         let $ = layui.jquery;
         let prefix = "/api/v1/serve/";
+        $("#type").val("#(serveTask.type)");
+        form.render('select');
         form.on('submit(management-save)', function (data) {
             $.ajax({
-                url: prefix + 'create',
+                url: prefix + 'update',
                 data: JSON.stringify(data.field),
                 dataType: 'json',
                 contentType: 'application/json',
