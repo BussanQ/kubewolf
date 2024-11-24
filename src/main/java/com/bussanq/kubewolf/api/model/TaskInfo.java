@@ -8,6 +8,7 @@ import lombok.Data;
  */
 @Data
 public class TaskInfo {
+    String taskId;
     String name;
     String status;
     String inUrl;

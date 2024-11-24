@@ -31,12 +31,11 @@ public class ServingC {
         List<TaskInfo> taskInfos = serveService.listWithStatus();
         Map<String, String> statusMap = new HashMap<>();
         for (TaskInfo taskInfo : taskInfos) {
-            statusMap.put(taskInfo.getName(), taskInfo.getStatus().toLowerCase());
+            statusMap.put(taskInfo.getTaskId(), taskInfo.getStatus().toLowerCase());
         }
         for (ServeTask task : datas.getList()){
-            String taskName = task.getTaskName();
-            if (statusMap.containsKey(taskName)) {
-                task.setStatus(statusMap.get(taskName));
+            if (statusMap.containsKey(task.getTaskId())) {
+                task.setStatus(statusMap.get(task.getTaskId()));
             }else {
                 task.setStatus("stopped");
             }

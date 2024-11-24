@@ -11,7 +11,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">服务名称：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="taskName" lay-verify="required" placeholder="请输入服务名称" class="layui-input" lay-required/>
+                        <input type="text" name="taskName" lay-verify="required" placeholder="请输入服务名称，仅支持小写字母和数字" class="layui-input" lay-required/>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -37,27 +37,15 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">代码git：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="codeId" placeholder="请输入代码git地址" class="layui-input"/>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">端口：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="port" placeholder="请输入端口号" class="layui-input"/>
-                    </div>
-                </div>
-                <div class="layui-form-item">
                     <label class="layui-form-label">实例数量：</label>
                     <div class="layui-input-block">
                         <input type="text" name="replicas" placeholder="请输入实例数量" class="layui-input"/>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">GPU数量：</label>
+                    <label class="layui-form-label">模型路径：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="gpu" placeholder="请输入GPU数量" class="layui-input"/>
+                        <input type="text" name="modelPath" placeholder="请输入日志目录" class="layui-input"/>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -69,11 +57,12 @@
             </div>
             <div class="layui-col-md6">
                 <div class="layui-form-item">
-                    <label class="layui-form-label">环境变量：</label>
+                    <label class="layui-form-label">端口：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="env" placeholder="请输入环境变量" class="layui-input"/>
+                        <input type="text" name="port" placeholder="请输入端口号" class="layui-input"/>
                     </div>
                 </div>
+
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">CPU：</label>
@@ -87,14 +76,28 @@
                         <input type="text" name="mem" placeholder="请输入内存" class="layui-input"/>
                     </div>
                 </div>
-            </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">GPU数量：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="gpu" placeholder="请输入GPU数量" class="layui-input"/>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">代码git：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="codeId" placeholder="请输入代码git地址" class="layui-input"/>
+                    </div>
+                </div>
 
-            <div class="layui-form-item">
-                <label class="layui-form-label">模型路径：</label>
-                <div class="layui-input-block">
-                    <input type="text" name="modelPath" placeholder="请输入日志目录" class="layui-input"/>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">环境变量：</label>
+                    <div class="layui-input-block">
+                        <textarea name="env" placeholder="请输入环境变量" class="layui-textarea"></textarea>
+                    </div>
                 </div>
             </div>
+
+
         </div>
     </div>
     <div class="bottom">

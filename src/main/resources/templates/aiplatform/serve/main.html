@@ -55,15 +55,13 @@
         </script>
 
         <script type="text/html" id="management-bar">
-            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="run">
-                运行
-            </button>
-            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="stop">
-                停止
-            </button>
-            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="detail">
-                详情
-            </button>
+            #[[ {{# if (d.status == "stopped") { }}
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="run">运行</button>
+            {{# } else {  }}
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="stop">停止</button>
+            {{# } }}
+            ]]#
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="detail">详情</button>
             <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i
                     class="layui-icon layui-icon-edit"></i>
             </button>
@@ -105,54 +103,42 @@
                 {
                     field: 'taskName',
                     title: '服务名称',
-                    width: 160
+                    width: 120
                 },
                 {
                     field: 'type',
                     title: '服务类型',
-                    width: 160
+                    width: 120
                 },
                 {
                     field: 'image',
                     title: '服务镜像',
-                    width: 160
+                    width: 120
                 },
                 {
                     toolbar: '#state-bar', align: 'center', width: 90,
                     title: '服务状态',
-                    width: 160
-                },
-                {
-                    field: 'code',
-                    templet: function(d){
-                        if (d.code !== undefined){
-                            return d.code.codeId;
-                        }else {
-                            return '';
-                        }
-                    },
-                    title: '代码地址',
-                    width: 160
+                    width: 100
                 },
                 {
                     field: 'replicas',
                     title: '实例数量',
-                    width: 160
+                    width: 100
                 },
                 {
                     field: 'cpu',
                     title: 'cpu',
-                    width: 160
+                    width: 80
                 },
                 {
                     field: 'mem',
                     title: '内存',
-                    width: 160
+                    width: 80
                 },
                 {
                     field: 'gpu',
                     title: 'gpu数量',
-                    width: 160
+                    width: 80
                 },
                 {
                     field: 'modelPath',
@@ -162,7 +148,7 @@
                 {
                     field: 'port',
                     title: '端口号',
-                    width: 160
+                    width: 100
                 },
                 {
                     field: 'cmd',
@@ -185,11 +171,23 @@
                     width: 160
                 },
                 {
+                    field: 'code',
+                    templet: function(d){
+                        if (d.code !== undefined){
+                            return d.code.codeId;
+                        }else {
+                            return '';
+                        }
+                    },
+                    title: '代码地址',
+                    width: 160
+                },
+                {
                     field: 'createTime',
                     title: '创建时间',
                     width: 160
                 },
-                {title: '操作', toolbar: '#management-bar', align: 'center', width: 300, fixed: 'right'}
+                {title: '操作', toolbar: '#management-bar', align: 'center', width: 220, fixed: 'right'}
             ]
         ]
 
@@ -249,7 +247,7 @@
                 type: 2,
                 title: '新增服务',
                 shade: 0.1,
-                area: ['1000px','700px'],
+                area: ['1000px','520px'],
                 content: '/serve/add'
             });
         }
@@ -259,7 +257,7 @@
                 type: 2,
                 title: '修改服务',
                 shade: 0.1,
-                area: ['1000px', '700px'],
+                area: ['1000px', '520px'],
                 content: '/serve/edit?taskId=' + obj.data['taskId']
             });
         }

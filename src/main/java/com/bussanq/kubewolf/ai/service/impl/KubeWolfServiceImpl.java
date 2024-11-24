@@ -56,6 +56,8 @@ public class KubeWolfServiceImpl implements AIService {
 
     @Override
     public TaskInfo startServing(ServeTask task) {
+        String name = task.getTaskName();
+        task.setTaskName(name.toLowerCase());
         String taskYaml = DbUtil.renderToYaml(task, task.getClass().getSimpleName());
         if (k8sService.apply(taskYaml)) {
             return new TaskInfo();
@@ -83,6 +85,7 @@ public class KubeWolfServiceImpl implements AIService {
             return null;
         }
         TaskInfo taskInfo = new TaskInfo();
+        taskInfo.setTaskId(deployment.getMetadata().getLabels().get("kubewolfResourceId"));
         taskInfo.setName(deployment.getMetadata().getName());
         Integer readyReplicas = deployment.getStatus().getReadyReplicas();
         if (readyReplicas == null || readyReplicas < deployment.getStatus().getReplicas()) {
