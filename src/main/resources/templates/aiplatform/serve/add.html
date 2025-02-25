@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" >
 <head>
-    #@header("新增服务")
+    #@header("部署模型")
 </head>
 <body>
 <form class="layui-form">
@@ -15,25 +15,23 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">类型：</label>
+                    <label class="layui-form-label">推理框架：</label>
                     <div class="layui-input-block">
-                        <select name="type" lay-required>
+                        <select name="backend" lay-required>
                             <option value=""></option>
-                            <option value="TFJob">TFJob</option>
-                            <option value="PyTorchJob">PyTorchJob</option>
+                            <option value="ollama">ollama</option>
+                            <option value="vllm">vllm</option>
                         </select>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">镜像：</label>
+                    <label class="layui-form-label">模型：</label>
                     <div class="layui-input-block">
-                       <!-- <select name="images" lay-required>
+                        <select name="taskId" lay-required>
                             <option value=""></option>
-                            <option value="0">tensorflow/tensorflow:1.11.0-gpu-py3</option>
-                            <option value="1">pythoch:1.0</option>
-                            <option value="2">mpi:1.0</option>
-                        </select>-->
-                        <input type="text" name="image" lay-verify="required" placeholder="请输入镜像名称" class="layui-input" lay-required/>
+                            <option value="UXdlbjIuNS0wLjVCLUluc3RydWN0">Qwen2.5-0.5B-Instruct</option>
+                            <option value="RGVlcFNlZWstRGlzdGlsbC03Qg==">DeepSeek-Distill-7B</option>
+                        </select>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -42,61 +40,7 @@
                         <input type="text" name="replicas" placeholder="请输入实例数量" class="layui-input"/>
                     </div>
                 </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">模型路径：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="modelPath" placeholder="请输入日志目录" class="layui-input"/>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">启动命令：</label>
-                    <div class="layui-input-block">
-                        <textarea name="cmd" placeholder="请输入启动命令" class="layui-textarea"></textarea>
-                    </div>
-                </div>
             </div>
-            <div class="layui-col-md6">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">端口：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="port" placeholder="请输入端口号" class="layui-input"/>
-                    </div>
-                </div>
-
-
-                <div class="layui-form-item">
-                    <label class="layui-form-label">CPU：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="cpu" placeholder="请输入cpu" class="layui-input"/>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">内存：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="mem" placeholder="请输入内存" class="layui-input"/>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">GPU数量：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="gpu" placeholder="请输入GPU数量" class="layui-input"/>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">代码git：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="codeId" placeholder="请输入代码git地址" class="layui-input"/>
-                    </div>
-                </div>
-
-                <div class="layui-form-item">
-                    <label class="layui-form-label">环境变量：</label>
-                    <div class="layui-input-block">
-                        <textarea name="env" placeholder="请输入环境变量" class="layui-textarea"></textarea>
-                    </div>
-                </div>
-            </div>
-
 
         </div>
     </div>
@@ -122,7 +66,7 @@
         let prefix = "/api/v1/serve/";
         form.on('submit(management-save)', function (data) {
             $.ajax({
-                url: prefix + 'create',
+                url: prefix + 'startModel',
                 data: JSON.stringify(data.field),
                 dataType: 'json',
                 contentType: 'application/json',

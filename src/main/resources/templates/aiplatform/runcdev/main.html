@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" >
 <head>
-    #@header("模型服务")
+    #@header("我的服务")
 </head>
 <body class="pear-container">
 
@@ -16,14 +16,14 @@
                     </div>
                 </div>
                 <div class="layui-form-item layui-inline">
-                    <label class="layui-form-label">推理框架</label>
+                    <label class="layui-form-label">服务类型</label>
                     <div class="layui-input-inline">
 <!--                        <input type="text" name="jobType" lay-verify="title" autocomplete="off" placeholder="请输入服务类型"-->
 <!--                               class="layui-input">-->
                         <select name="jobType" lay-required>
                             <option value=""></option>
-                            <option value="ollama">ollama</option>
-                            <option value="vllm">vllm</option>
+                            <option value="TFJob">TFJob</option>
+                            <option value="PyTorchJob">PyTorchJob</option>
                             <!--                            <option value="mpijob">mpijob</option>-->
                         </select>
                     </div>
@@ -50,7 +50,7 @@
         <script type="text/html" id="management-toolbar">
             <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
                 <i class="layui-icon layui-icon-add-1"></i>
-                部署模型
+                新增
             </button>
         </script>
 
@@ -94,31 +94,56 @@
         let prefix = "/api/v1/serve/";
         let cols = [
             [
-                // {
-                //     field: 'taskId',
-                //     title: '服务编号',
-                //     width: 160
-                // },
+                {
+                    field: 'taskId',
+                    title: '服务编号',
+                    fixed: 'left',
+                    width: 160
+                },
                 {
                     field: 'taskName',
                     title: '服务名称',
-                    fixed: 'left',
-                    width: 200
+                    width: 120
                 },
                 {
                     field: 'type',
-                    title: '推理框架',
+                    title: '服务类型',
+                    width: 120
+                },
+                {
+                    field: 'image',
+                    title: '服务镜像',
                     width: 120
                 },
                 {
                     toolbar: '#state-bar', align: 'center', width: 90,
                     title: '服务状态',
-                    width: 120
+                    width: 100
                 },
                 {
                     field: 'replicas',
                     title: '实例数量',
                     width: 100
+                },
+                {
+                    field: 'cpu',
+                    title: 'cpu',
+                    width: 80
+                },
+                {
+                    field: 'mem',
+                    title: '内存',
+                    width: 80
+                },
+                {
+                    field: 'gpu',
+                    title: 'gpu数量',
+                    width: 80
+                },
+                {
+                    field: 'modelPath',
+                    title: '模型路径',
+                    width: 160
                 },
                 {
                     field: 'port',
@@ -127,7 +152,35 @@
                 },
                 {
                     field: 'cmd',
-                    title: '执行命令'
+                    title: '执行命令',
+                    width: 160
+                },
+                {
+                    field: 'env',
+                    title: '环境变量',
+                    width: 160
+                },
+                {
+                    field: 'inUrl',
+                    title: '内部访问地址',
+                    width: 160
+                },
+                {
+                    field: 'outUrl',
+                    title: '外部访问地址',
+                    width: 160
+                },
+                {
+                    field: 'code',
+                    templet: function(d){
+                        if (d.code !== undefined){
+                            return d.code.codeId;
+                        }else {
+                            return '';
+                        }
+                    },
+                    title: '代码地址',
+                    width: 160
                 },
                 {
                     field: 'createTime',
@@ -194,7 +247,7 @@
                 type: 2,
                 title: '新增服务',
                 shade: 0.1,
-                area: ['550px','440px'],
+                area: ['1000px','520px'],
                 content: '/serve/add'
             });
         }

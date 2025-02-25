@@ -59,9 +59,9 @@ spec:
               name: localtime
               readOnly: true
             #if(model_path)
-            - name: data
+            - name: model
               subPath:
-              mountPath: /data
+              mountPath: /model
             #end
             #if(code_repo)
             - mountPath: #(mount_path)
@@ -108,9 +108,9 @@ spec:
             type: ''
           name: localtime
         #if(model_path)
-        - name: data
+        - name: model
           persistentVolumeClaim:
-            claimName: data
+            claimName: model
         #end
         - emptyDir: {}
           name: code-sync

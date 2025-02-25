@@ -48,6 +48,11 @@ public class ServingC {
         return ResultJson.res(serveService.start(taskReq));
     }
 
+    @PostMapping("/startModel")
+    public ResultJson startModel(@RequestBody ServeTaskReq taskReq) {
+        return ResultJson.res(serveService.startModel(taskReq));
+    }
+
     @PostMapping("/stop")
     public ResultJson stop(@RequestBody ServeTaskReq taskReq) {
         return ResultJson.res(serveService.stop(taskReq));
