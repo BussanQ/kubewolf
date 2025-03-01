@@ -1,5 +1,6 @@
 cd "$(dirname "$0")" >/dev/null 2>&1 || exit
 source common.sh
+[ -d /etc/docker/ ] || mkdir /etc/docker/ -p
 lsb_dist=$(get_distribution)
 lsb_dist="$(echo "$lsb_dist" | tr '[:upper:]' '[:lower:]')"
 if ! command_exists docker; then
@@ -11,7 +12,6 @@ if ! command_exists docker; then
     ;;
   esac
 
-  [ -d /etc/docker/ ] || mkdir /etc/docker/ -p
   cp ../etc/docker.service /etc/systemd/system/
   tar --strip-components=1 -zxvf ../cri/docker.tgz -C /usr/bin
   # shellcheck disable=SC2046
