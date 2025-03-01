@@ -1,0 +1,19 @@
+FROM scratch
+MAINTAINER bussanq
+LABEL init="init-cri.sh && bash init.sh" \
+      clean="clean.sh && bash clean-cri.sh \$criData \$criDockerdData" \
+      check="check.sh \$registryData" \
+      init-registry="init-registry.sh \$registryData \$registryConfig" \
+      clean-registry="clean-registry.sh \$registryData \$registryConfig" \
+      vip="\$defaultVIP"
+ENV criData=/var/lib/docker \
+    criDockerdData=/var/lib/cri-dockerd \
+    registryData=/var/lib/registry \
+    registryConfig=/etc/registry \
+    registryDomain=bussanq.hub \
+    registryPort=5000 \
+    registryUsername=admin \
+    registryPassword=passw0rd \
+    SEALOS_SYS_CRI_ENDPOINT=/var/run/cri-dockerd.sock \
+    SEALOS_SYS_IMAGE_ENDPOINT=/var/run/image-cri-shim.sock
+COPY . .
