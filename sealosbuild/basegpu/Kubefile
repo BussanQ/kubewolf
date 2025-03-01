@@ -1,5 +1,5 @@
 FROM registry.cn-beijing.aliyuncs.com/bqai/kubernetes:v1.28.9-base
 COPY Kubefile app/Kubefile_gpu
 COPY init-docker.sh scripts/
-COPY nvidia-daemon.json etc/
+COPY nvidia-daemon.json.tmpl etc/
 COPY nvidia-docker cri/nvidia-docker
