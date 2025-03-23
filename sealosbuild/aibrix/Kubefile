@@ -1,0 +1,4 @@
+FROM scratch
+MAINTAINER bussanq
+COPY . .
+CMD ["kubectl create -f manifests/aibrix-dependency-v0.2.1.yaml && kubectl create -f manifests/aibrix-core-v0.2.1.yaml"]
