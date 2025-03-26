@@ -1,0 +1,2 @@
+docker.io/envoyproxy/gateway:v1.3.2
+docker.io/envoyproxy/envoy:distroless-v1.33.1
