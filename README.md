@@ -1,6 +1,8 @@
 # kubewolf
 ## AI Infra / Model Platform
 一个高效易用、现代化、高性能的AI大模型平台，支持单机/集群、纯离线部署，前置准备只需要最小化安装的操作系统及GPU驱动。
+<img src="res/kubewolf.png">
+
 ## 特性
 - 离线环境/私有云一键部署
 - 算力调度、虚拟化，支持国产异构芯片
