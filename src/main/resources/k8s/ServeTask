@@ -4,6 +4,7 @@ kind: Deployment
 metadata:
   annotations:
     bussanq.com/version: v1.0
+    bussanq.com/gateway: false
   labels:
     app: kubewolf
     kubewolf: ServeTask

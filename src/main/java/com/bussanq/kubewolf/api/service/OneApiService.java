@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
  * @date 2024/11/09
  */
 @Service
-public class ApiService {
+public class OneApiService {
+
+
 
 }

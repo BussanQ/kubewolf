@@ -34,7 +34,7 @@ public class ActiveRecordPluginConfig {
         HikariCpPlugin db = new HikariCpPlugin(url, username, password, driverClassName);
         db.start();
         ActiveRecordPlugin arp = new ActiveRecordPlugin(db);
-        arp.setShowSql(true);
+        arp.setShowSql(false);
         arp.setDevMode(false);
         arp.getEngine().setSourceFactory(new ClassPathSourceFactory());
         arp.addSqlTemplate("/sql/sqls.sql");

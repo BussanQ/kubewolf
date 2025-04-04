@@ -7,6 +7,7 @@ import com.bussanq.kubewolf.common.k8s.model.K8sRes;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinitionNames;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
@@ -94,6 +95,12 @@ public class K8sService {
             log.error("执行delete异常", e);
             return false;
         }
+    }
+
+    public Deployment addDeployAnnotations (String deployName, String key, String value) {
+        return client.apps().deployments().inNamespace(currentNamespace).withName(deployName).edit(d ->
+                d.edit().editOrNewMetadata().addToAnnotations(key, value).
+                        endMetadata().build());
     }
 
     public boolean getDeployStatus (String name) {
