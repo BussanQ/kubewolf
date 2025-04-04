@@ -3,8 +3,9 @@ package com.bussanq.kubewolf.ai.service.impl;
 import com.bussanq.kubewolf.ai.service.AIService;
 import com.bussanq.kubewolf.api.model.TaskInfo;
 import com.bussanq.kubewolf.api.model.dto.ServeTask;
-import com.bussanq.kubewolf.common.utils.DbUtil;
 import com.bussanq.kubewolf.common.k8s.lib.K8sService;
+import com.bussanq.kubewolf.common.utils.DbUtil;
+import com.jfinal.template.Engine;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.informers.ResourceEventHandler;
 import io.fabric8.kubernetes.client.informers.SharedIndexInformer;
@@ -25,11 +26,14 @@ import java.util.stream.Collectors;
 @Service
 public class KubeWolfServiceImpl implements AIService {
 
-    @Value("${k8s.namespace}")
+    @Value("${k8s.namespace:kubewolf}")
     String namespace;
 
     @Autowired(required = false)
     K8sService k8sService;
+
+    @Autowired
+    Engine engine;
 
     private SharedIndexInformer<Deployment> deploymentInformer;
 
@@ -39,7 +43,8 @@ public class KubeWolfServiceImpl implements AIService {
                 withLabel("kubewolf", "ServeTask").inform(new ResourceEventHandler<>() {
                     @Override
                     public void onAdd(io.fabric8.kubernetes.api.model.apps.Deployment deployment) {
-
+                        log.info("Add deployment {}", deployment.getMetadata().getName());
+                        k8sService.apply(engine.getTemplate("HTTPRoute").renderToString());
                     }
 
                     @Override

@@ -60,8 +60,7 @@ spec:
               readOnly: true
             #if(model_path)
             - name: model
-              subPath:
-              mountPath: /model
+              mountPath: #(model_path)
             #end
             #if(code_repo)
             - mountPath: #(mount_path)
@@ -77,23 +76,13 @@ spec:
       #if(code_repo)
       initContainers:
       - env:
-        #if(git_username)
-        - name: GIT_USERNAME
-          value: #(git_username)
-        - name: GIT_PASSWORD
-          value: #(git_password)
-        #end
-        - name: GIT_SYNC_REPO
+        - name: SYNC_REPO
           value: #(code_repo)
-        - name: GIT_SYNC_ROOT
+        - name: SYNC_ROOT
           value: /code
-        - name: GIT_SYNC_DEST
-          value: #(project_name)
-        - name: GIT_SYNC_ONE_TIME
-          value: "true"
-        image: #(image_repo)/git-sync:go
+        image: #(image_repo)/kubewolf-runtime:latest
         imagePullPolicy: IfNotPresent
-        name: init-code
+        name: runtime
         resources: {}
         volumeMounts:
         - mountPath: /code
@@ -130,4 +119,4 @@ spec:
       targetPort: #(port ?? 80)
   selector:
     kubewolfResourceId: #(task_id)
-  type: NodePort
+  type: ClusterIP
