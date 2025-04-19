@@ -117,27 +117,27 @@
         <div class="layui-col-lg3 layui-col-md4 layui-col-sm4 layui-col-xs6">
             <div class="console-link-block" ew-title="系统版本">
                 <div class="console-link-block-num">#(imageCount)</div>
-                <div class="console-link-block-text">算法数量</div>
-                <img class="console-link-block-icon" src="../../admin/images/k8s.png">
+                <div class="console-link-block-text">模型数量</div>
+                <img class="console-link-block-icon" src="/admin/images/k8s.png">
             </div>
         </div>
         <div class="layui-col-lg3 layui-col-md4 layui-col-sm4 layui-col-xs6">
             <div class="console-link-block" ew-title="节点数">
                 <div class="console-link-block-num">#(nodes)</div>
                 <div class="console-link-block-text">节点数</div>
-                <img class="console-link-block-icon" src="../../admin/images/node.png">
+                <img class="console-link-block-icon" src="/admin/images/node.png">
             </div>
         </div>
         <div class="layui-col-lg3 layui-col-md4 layui-col-sm4 layui-col-xs6">
             <div class="console-link-block" ew-title="CPU核数">
-                <img class="console-link-block-icon" src="../../admin/images/cpu.png">
+                <img class="console-link-block-icon" src="/admin/images/cpu.png">
                 <div class="console-link-block-num">#(cpu)</div>
                 <div class="console-link-block-text">CPU核数</div>
             </div>
         </div>
         <div class="layui-col-lg3 layui-col-md4 layui-col-sm4 layui-col-xs6">
             <div class="console-link-block" ew-title="内存">
-                <img class="console-link-block-icon" src="../../admin/images/mem.png">
+                <img class="console-link-block-icon" src="/admin/images/mem.png">
                 <div class="console-link-block-num">#if (memory) #(memory)GiB #end</div>
                 <div class="console-link-block-text">内存</div>
             </div>
@@ -175,20 +175,14 @@
         </div>
     </div>
     <blockquote class="layui-elem-quote layui-text" style="margin-top: 15px;background: #fff;">
-        AI算法，支持内存、CPU、GPU等异构资源管理分配。
+        AI大模型，支持内存、CPU、GPU等异构资源管理分配。
     </blockquote>
 </div>
 
-<!-- 加载动画 -->
-<div class="page-loading">
-    <div class="ball-loader">
-        <span></span><span></span><span></span><span></span>
-    </div>
-</div>
 
-<!--<script src="../../admin/libs/echarts/echarts.min.js"></script>-->
-<!--<script src="../../admin/libs/echarts/echarts-liquidfill.min.js"></script>-->
-<!--<script src="../../admin/libs/echarts/echartsTheme.js"></script>-->
+<script src="/component/echarts/echarts.min.js"></script>
+<script src="/component/echarts/echarts-liquidfill.min.js"></script>
+<script src="/component/echarts/echartsTheme.js"></script>
 #@footer()
 <script>
     layui.use(['layer'], function () {
