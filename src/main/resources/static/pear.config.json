@@ -15,8 +15,8 @@
 		"tabMax": 30,
 		"index": {
 			"id": "90031",
-			"href": "/serve/main",
-			"title": "我的服务"
+			"href": "/console",
+			"title": "主页"
 		}
 	},
 	"theme": {

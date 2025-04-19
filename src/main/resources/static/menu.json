@@ -4,11 +4,21 @@
     "title": "AI 平台",
     "type": "0",
     "openType": "",
-    "icon": "layui-icon layui-icon-chart-screen",
+    "icon": "layui-icon layui-icon-chart",
     "href": "",
     "children": [
       {
         "id": "90031",
+        "title": "主页",
+        "type": "1",
+        "openType": "_iframe",
+        "icon": "layui-icon  layui-icon-console",
+        "href": "/console",
+        "children": [],
+        "username": null
+      },
+      {
+        "id": "90032",
         "title": "我的服务",
         "type": "1",
         "openType": "_iframe",
@@ -18,22 +28,12 @@
         "username": null
       },
       {
-        "id": "90032",
+        "id": "90033",
         "title": "训练任务",
         "type": "1",
         "openType": "_iframe",
         "icon": "layui-icon  layui-icon-console",
         "href": "/train/main",
-        "children": [],
-        "username": null
-      },
-      {
-        "id": "90033",
-        "title": "我的空间",
-        "type": "1",
-        "openType": "_iframe",
-        "icon": "layui-icon  layui-icon-console",
-        "href": "/space/main",
         "children": [],
         "username": null
       },
@@ -48,6 +48,36 @@
         "username": null
       }
     ],
+    "username": null
+  },
+  {
+    "id": "9004",
+    "title": "系统管理",
+    "type": "0",
+    "openType": "",
+    "icon": "layui-icon layui-icon-set",
+    "href": "",
+    "children": [
+      {
+        "id": "90041",
+        "title": "存储管理",
+        "type": "1",
+        "openType": "_iframe",
+        "icon": "layui-icon  layui-icon-console",
+        "href": "/console",
+        "children": [],
+        "username": null
+      },
+      {
+        "id": "90042",
+        "title": "镜像管理",
+        "type": "1",
+        "openType": "_iframe",
+        "icon": "layui-icon  layui-icon-console",
+        "href": "/serve/main",
+        "children": [],
+        "username": null
+      }],
     "username": null
   }
 ]
