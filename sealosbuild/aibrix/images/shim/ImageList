@@ -1,2 +1,0 @@
-envoyproxy/envoy:distroless-v1.31.0
-envoyproxy/gateway-dev:latest
