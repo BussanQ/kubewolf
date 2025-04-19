@@ -5,6 +5,8 @@ metadata:
   annotations:
     bussanq.com/version: v1.0
     bussanq.com/gateway: false
+    bussanq.com/modelport: "#(port ?? 80)"
+    bussanq.com/model: "qwen2.5:0.5b"
   labels:
     app: kubewolf
     kubewolf: ServeTask

@@ -1,11 +1,13 @@
 package com.bussanq.kubewolf.ai.k8s;
 
+import com.bussanq.kubewolf.api.service.GatewayService;
 import com.bussanq.kubewolf.common.k8s.lib.K8sService;
 import com.jfinal.template.Engine;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.informers.ResourceEventHandler;
 import io.fabric8.kubernetes.client.informers.SharedIndexInformer;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,8 +32,13 @@ public class K8sOperator {
     @Autowired
     Engine engine;
 
+    @Resource
+    GatewayService gatewayService;
+
     public static SharedIndexInformer<Deployment> deploymentInformer;
     private static final String Gateway = "bussanq.com/gateway";
+    private static final String ModelPort = "bussanq.com/modelport";
+    private static final String ModelName = "bussanq.com/model";
 
     @PostConstruct
     private void init() {
@@ -43,6 +50,10 @@ public class K8sOperator {
                         log.info("Add deployment {}", name);
                         Map<String, String> annos = deployment.getMetadata().getAnnotations();
                         if ("false".equals(annos.get(Gateway))) {
+                            String modelName = annos.get(ModelName);
+                            String port = annos.get(ModelPort);
+                            String res = gatewayService.addLlmRoute(name, name, modelName, port);
+                            log.info("Add route {}", res);
 //                            k8sService.apply(engine.getTemplate("HTTPRoute").renderToString(
 //                                    Kv.by("name", name)
 //                            ));
