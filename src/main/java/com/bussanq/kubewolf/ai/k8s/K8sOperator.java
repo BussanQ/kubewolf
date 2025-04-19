@@ -52,7 +52,7 @@ public class K8sOperator {
                         if ("false".equals(annos.get(Gateway))) {
                             String modelName = annos.get(ModelName);
                             String port = annos.get(ModelPort);
-                            String res = gatewayService.addLlmRoute(name, name, modelName, port);
+                            String res = gatewayService.addRoute(name, name, modelName, port);
                             log.info("Add route {}", res);
 //                            k8sService.apply(engine.getTemplate("HTTPRoute").renderToString(
 //                                    Kv.by("name", name)
@@ -72,6 +72,7 @@ public class K8sOperator {
                         log.info("Del deployment {}", name);
                         Map<String, String> annos = deployment.getMetadata().getAnnotations();
                         if ("true".equals(annos.get(Gateway))) {
+                            gatewayService.delRoute(name);
 //                            k8sService.delete(engine.getTemplate("HTTPRoute").renderToString(
 //                                    Kv.by("name", name)
 //                            ));

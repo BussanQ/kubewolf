@@ -13,3 +13,6 @@ spring:
 k8s:
   config: D:\Download\fsdownload\config
   namespace: default
+oneapi:
+  url: ${ONEAPI_URL:http://gateway-one:3000}
+  accessToken: ${ONEAPI_ACCESS_TOKEN:token}

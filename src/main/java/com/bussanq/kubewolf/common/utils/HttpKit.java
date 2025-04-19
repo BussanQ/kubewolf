@@ -7,6 +7,7 @@ import org.apache.http.*;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
@@ -89,45 +90,52 @@ public class HttpKit {
         return httpClient;
     }
 
-    public static InputStream doGetStream(String url){
+    public static InputStream doGetStream(String url) {
         HttpGet httpGet;
         HttpResponse response;
-        try{
+        try {
             httpGet = new HttpGet(url);
             response = httpClient.execute(httpGet);
-            if(response != null){
+            if (response != null) {
                 return response.getEntity().getContent();
             }
-        }catch(Exception ex){
-            log.error("url:{},error:{}",url,ex.getMessage());
+        } catch (Exception ex) {
+            log.error("url:{},error:{}", url, ex.getMessage());
         }
         return null;
     }
 
-    public static String doGet(String url){
+    public static String doGet(String url) {
+        return doGetWithHeader(url, Kv.create());
+    }
+
+    public static String doGetWithHeader(String url, Map<String, String> headers) {
         HttpGet httpGet;
         String result = null;
         HttpResponse response;
-        try{
+        try {
             httpGet = new HttpGet(url);
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                httpGet.setHeader(header.getKey(), header.getValue());
+            }
             response = httpClient.execute(httpGet);
-            if(response != null){
+            if (response != null) {
                 HttpEntity resEntity = response.getEntity();
-                if(resEntity != null){
-                    result = EntityUtils.toString(resEntity,StandardCharsets.UTF_8);
+                if (resEntity != null) {
+                    result = EntityUtils.toString(resEntity, StandardCharsets.UTF_8);
                 }
             }
-        }catch(Exception ex){
-            log.error("url:{},error:{}",url,ex.getMessage());
-        }finally {}
+        } catch (Exception ex) {
+            log.error("url:{},error:{}", url, ex.getMessage());
+        }
         return result;
     }
 
-    public static String doGet(String url,Map<String,Object> map){
+    public static String doGet(String url, Map<String, Object> map) {
         HttpGet httpGet;
         String result = null;
         HttpResponse response;
-        try{
+        try {
             CloseableHttpClient httpClient = getHttpclient();
             //设置参数
             URIBuilder uriBuilder = new URIBuilder(url);
@@ -140,87 +148,114 @@ public class HttpKit {
             httpGet = new HttpGet(build);
 
             response = httpClient.execute(httpGet);
-            if(response != null){
+            if (response != null) {
                 HttpEntity resEntity = response.getEntity();
-                if(resEntity != null){
-                    result = EntityUtils.toString(resEntity,StandardCharsets.UTF_8);
+                if (resEntity != null) {
+                    result = EntityUtils.toString(resEntity, StandardCharsets.UTF_8);
                 }
             }
-        }catch(Exception ex){
-            log.error("url:{},error:{}",url,ex.getMessage());
-        }finally {
+        } catch (Exception ex) {
+            log.error("url:{},error:{}", url, ex.getMessage());
         }
         return result;
     }
 
-    public static String doPost(String url,Map<String,String> map,Map<String, String> headers){
+    public static String doDelete(String url) {
+        return doDelete(url, Kv.create());
+    }
+
+    public static String doDelete(String url, Map<String, String> headers) {
+        HttpDelete httpDelete;
+        String result = null;
+        HttpResponse response;
+        try {
+            httpDelete = new HttpDelete(url);
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                httpDelete.setHeader(header.getKey(), header.getValue());
+            }
+            response = httpClient.execute(httpDelete);
+            if (response != null) {
+                HttpEntity resEntity = response.getEntity();
+                if (resEntity != null) {
+                    result = EntityUtils.toString(resEntity, StandardCharsets.UTF_8);
+                }
+            }
+        } catch (Exception ex) {
+            log.error("url:{},error:{}", url, ex.getMessage());
+        }
+        return result;
+    }
+
+    public static String doPost(String url, Map<String, String> map, Map<String, String> headers) {
         HttpPost httpPost = null;
         String result = null;
         HttpResponse response = null;
-        try{
+        try {
             httpPost = new HttpPost(url);
-            for(Map.Entry<String,String> header : headers.entrySet()){
-                httpPost.addHeader(header.getKey(),header.getValue());
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                httpPost.addHeader(header.getKey(), header.getValue());
             }
             //设置参数
             List<NameValuePair> list = new ArrayList<NameValuePair>();
             Iterator iterator = map.entrySet().iterator();
-            while(iterator.hasNext()){
-                Map.Entry<String,String> elem = (Map.Entry<String, String>) iterator.next();
-                list.add(new BasicNameValuePair(elem.getKey(),elem.getValue()));
+            while (iterator.hasNext()) {
+                Map.Entry<String, String> elem = (Map.Entry<String, String>) iterator.next();
+                list.add(new BasicNameValuePair(elem.getKey(), elem.getValue()));
             }
-            if(list.size() > 0){
+            if (list.size() > 0) {
                 UrlEncodedFormEntity entity = new UrlEncodedFormEntity(list, StandardCharsets.UTF_8);
                 httpPost.setEntity(entity);
             }
             response = httpClient.execute(httpPost);
-            if(response != null){
+            if (response != null) {
                 HttpEntity resEntity = response.getEntity();
-                if(resEntity != null){
-                    result = EntityUtils.toString(resEntity,StandardCharsets.UTF_8);
+                if (resEntity != null) {
+                    result = EntityUtils.toString(resEntity, StandardCharsets.UTF_8);
                 }
             }
-        }catch(Exception ex){
-            log.error("url:{},error:{}",url,ex.getMessage());
-        }finally {}
+        } catch (Exception ex) {
+            log.error("url:{},error:{}", url, ex.getMessage());
+        } finally {
+        }
         return result;
     }
 
-    public static String postJson(String url,String jsonData,Map<String, String> headers){
+    public static String postJson(String url, String jsonData, Map<String, String> headers) {
         HttpPost httpPost = null;
         String result = null;
         HttpResponse response = null;
-        try{
+        try {
             httpPost = new HttpPost(url);
-            httpPost.addHeader("Content-Type","application/json");
-            for(Map.Entry<String,String> header : headers.entrySet()){
-                httpPost.addHeader(header.getKey(),header.getValue());
+            httpPost.addHeader("Content-Type", "application/json");
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                httpPost.addHeader(header.getKey(), header.getValue());
             }
-            if (StrUtil.isNotBlank(jsonData)){
+            if (StrUtil.isNotBlank(jsonData)) {
                 StringEntity entity = new StringEntity(jsonData, StandardCharsets.UTF_8);
                 httpPost.setEntity(entity);
             }
             response = httpClient.execute(httpPost);
             Header h = response.getFirstHeader("location");
 
-            if(response != null){
+            if (response != null) {
                 HttpEntity resEntity = response.getEntity();
-                if(resEntity != null){
+                if (resEntity != null) {
                     result = EntityUtils.toString(resEntity, StandardCharsets.UTF_8);
                 }
             }
-        }catch(Exception ex){
-            log.error("url:{},error:{}",url,ex.getMessage());
-        }finally {
+        } catch (Exception ex) {
+            log.error("url:{},error:{}", url, ex.getMessage());
+        } finally {
         }
         return result;
     }
 
-    public static String postJson(String url, Kv dataMap){
-        return postJson(url,dataMap.toString(), Kv.create());
+    public static String postJson(String url, Kv dataMap) {
+        return postJson(url, dataMap.toString(), Kv.create());
     }
-    public static String postJson(String url,String jsonData){
-        return postJson(url,jsonData, Kv.create());
+
+    public static String postJson(String url, String jsonData) {
+        return postJson(url, jsonData, Kv.create());
     }
 
 }
