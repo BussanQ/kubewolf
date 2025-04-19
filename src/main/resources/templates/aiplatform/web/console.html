@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    #@header("AI算法")
+    <style>
+        .layui-fluid {
+            position: relative;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        /** 统计快捷方式样式 */
+        .console-link-block {
+            display: block;
+            position: relative;
+            color: #fff;
+            font-size: 18px;
+            padding: 25px 20px;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0px 3px 5px rgba(0, 0, 0, .1);
+            background-color: rgb(155, 197, 57);
+        }
+
+        .console-link-block .console-link-block-num {
+            font-size: 40px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .console-link-block .console-link-block-icon {
+            height: 70px;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .console-link-block .console-link-block-band {
+            background-color: rgb(227, 42, 22);
+            font-size: 14px;
+            position: absolute;
+            width: 80px;
+            padding: 2px 0;
+            text-align: center;
+            transform: rotate(45deg);
+            right: -21px;
+            top: 8px;
+            color: rgba(255, 255, 255, .9);
+            z-index: 1;
+        }
+
+        /** //统计快捷方式样式end */
+
+        /** 小屏幕下样式 */
+        @media screen and (max-width: 992px) {
+            .console-link-block {
+                font-size: 14px;
+                padding: 15px 10px;
+            }
+
+            .console-link-block .console-link-block-num {
+                font-size: 28px;
+                margin-bottom: 0px;
+            }
+
+            .console-link-block .console-link-block-icon {
+                height: 45px;
+                right: 10px;
+            }
+
+            .console-link-block .console-link-block-band {
+                font-size: 12px;
+                right: -25px;
+                top: 8px;
+            }
+
+        }
+
+        /** 设置每个快捷块的颜色 */
+        #consoleLink > div:first-child .console-link-block {
+            background-color: rgb(155, 197, 57);
+        }
+
+        #consoleLink > div:nth-child(2) .console-link-block {
+            background-color: rgb(85, 165, 234);
+        }
+
+        #consoleLink > div:nth-child(3) .console-link-block {
+            background-color: rgb(157, 175, 291);
+        }
+
+        #consoleLink > div:nth-child(4) .console-link-block {
+            background-color: rgb(245, 145, 162);
+        }
+
+        #consoleLink > div:nth-child(5) .console-link-block {
+            background-color: rgb(254, 170, 79);
+        }
+
+        #consoleLink > div:last-child .console-link-block {
+            background-color: rgb(64, 212, 176);
+        }
+
+        /** //设置每个快捷块的颜色end */
+    </style>
+</head>
+
+<body>
+
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <!-- 快捷方式 -->
+    <div id="consoleLink" class="layui-row layui-col-space15">
+        <div class="layui-col-lg3 layui-col-md4 layui-col-sm4 layui-col-xs6">
+            <div class="console-link-block" ew-title="系统版本">
+                <div class="console-link-block-num">#(imageCount)</div>
+                <div class="console-link-block-text">算法数量</div>
+                <img class="console-link-block-icon" src="../../admin/images/k8s.png">
+            </div>
+        </div>
+        <div class="layui-col-lg3 layui-col-md4 layui-col-sm4 layui-col-xs6">
+            <div class="console-link-block" ew-title="节点数">
+                <div class="console-link-block-num">#(nodes)</div>
+                <div class="console-link-block-text">节点数</div>
+                <img class="console-link-block-icon" src="../../admin/images/node.png">
+            </div>
+        </div>
+        <div class="layui-col-lg3 layui-col-md4 layui-col-sm4 layui-col-xs6">
+            <div class="console-link-block" ew-title="CPU核数">
+                <img class="console-link-block-icon" src="../../admin/images/cpu.png">
+                <div class="console-link-block-num">#(cpu)</div>
+                <div class="console-link-block-text">CPU核数</div>
+            </div>
+        </div>
+        <div class="layui-col-lg3 layui-col-md4 layui-col-sm4 layui-col-xs6">
+            <div class="console-link-block" ew-title="内存">
+                <img class="console-link-block-icon" src="../../admin/images/mem.png">
+                <div class="console-link-block-num">#if (memory) #(memory)GiB #end</div>
+                <div class="console-link-block-text">内存</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 统计图表 -->
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md4 layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-header">CPU利用率 <span style="color:#55A5EA;font-size: 16px;font-weight:bold;">
+                    &nbsp;&nbsp;#if(cpuRate) #else 数据异常 #end</span></div>
+                <div class="layui-card-body">
+                    <div id="tjDivDay" style="height: 373px;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md4 layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-header">内存<span style="color:#55A5EA;font-size: 16px;font-weight:bold;">
+                    &nbsp;&nbsp;#if(memoryUsed) #(memoryUsed) / #(memory) #else 数据异常 #end</span></div>
+                <div class="layui-card-body">
+                    <div id="tjDivWeek" style="height: 373px;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md4 layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-header">GPU利用率<span style="color:#55A5EA;font-size: 16px;font-weight:bold;">
+                    &nbsp;&nbsp;#if(gpuRate) #else 数据异常 #end</span></div>
+                <div class="layui-card-body">
+                    <div id="tjDivMonth" style="height: 373px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <blockquote class="layui-elem-quote layui-text" style="margin-top: 15px;background: #fff;">
+        AI算法，支持内存、CPU、GPU等异构资源管理分配。
+    </blockquote>
+</div>
+
+<!-- 加载动画 -->
+<div class="page-loading">
+    <div class="ball-loader">
+        <span></span><span></span><span></span><span></span>
+    </div>
+</div>
+
+<!--<script src="../../admin/libs/echarts/echarts.min.js"></script>-->
+<!--<script src="../../admin/libs/echarts/echarts-liquidfill.min.js"></script>-->
+<!--<script src="../../admin/libs/echarts/echartsTheme.js"></script>-->
+#@footer()
+<script>
+    layui.use(['layer'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+
+
+
+        // 渲染cpu利用率
+        var myCharts1 = echarts.init(document.getElementById('tjDivDay'));
+        var cpuRate = "#(cpuRate)";
+        if (cpuRate) {
+            var options1 = {
+                series: [{
+                    type: 'liquidFill',
+                    radius: '80%',
+                    data: [cpuRate, cpuRate, cpuRate, cpuRate],
+                    label: {
+                        formatter: function(param) {
+                            return (param.value*100).toFixed(2)
+                                +  '%';
+                        }
+                    },
+                    backgroundStyle: {
+                        borderWidth: 5,
+                        borderColor: '#55A5EA'
+                    },
+                    outline: {
+                        show: false
+                    }
+                }]
+            };
+            myCharts1.setOption(options1);
+        }
+
+        // ------------------------------------------------------------------------
+        // 渲染内存图表
+        var myCharts2 = echarts.init(document.getElementById('tjDivWeek'), myEchartsTheme);
+        var memRate = "#(memRate)";
+        if (memRate) {
+            var options2 = {
+                series: [{
+                    type: 'liquidFill',
+                    radius: '80%',
+                    data: [memRate, memRate, memRate, memRate],
+                    backgroundStyle: {
+                        borderWidth: 5,
+                        borderColor: '#55A5EA'
+                    },
+                    outline: {
+                        show: false
+                    }
+                }]
+            };
+            myCharts2.setOption(options2);
+        }
+
+        // -------------------------------------------------------------------------
+        // 渲染gpu利用率
+        var myCharts3 = echarts.init(document.getElementById('tjDivMonth'), myEchartsTheme);
+        var gpuRate = "#(gpuRate)";
+        if (gpuRate) {
+            var options3 = {
+                series: [{
+                    type: 'liquidFill',
+                    radius: '80%',
+                    data: [gpuRate, gpuRate, gpuRate, gpuRate],
+                    backgroundStyle: {
+                        borderWidth: 5,
+                        borderColor: '#55A5EA'
+                    },
+                    outline: {
+                        show: false
+                    }
+                }]
+            };
+            myCharts3.setOption(options3);
+        }
+
+        // 考虑页面刷新数据问题
+        // setInterval(function(){
+        //     $.get('/metrics',function (res) {
+        //         var cpuRate = res.cpuRate;
+        //         myCharts1.setOption({series:[{data: [cpuRate, cpuRate, cpuRate, cpuRate]}]});
+        //         var memRate = res.memRate;
+        //         myCharts2.setOption({series:[{data: [memRate, memRate, memRate, memRate]}]});
+        //         var gpuRate = res.gpuRate ;
+        //         myCharts3.setOption({series:[{data: [gpuRate, gpuRate, gpuRate, gpuRate]}]});
+        //     }, 'json');
+        // }, 10000);
+        // -------------------------------------------------------------------------
+
+        // 窗口大小改变事件
+        window.onresize = function () {
+            myCharts1.resize();
+            myCharts2.resize();
+            myCharts3.resize();
+        };
+
+    });
+</script>
+</body>
+
+</html>
