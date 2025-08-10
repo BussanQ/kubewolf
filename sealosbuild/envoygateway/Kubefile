@@ -1,4 +1,0 @@
-FROM scratch
-MAINTAINER bussanq
-COPY . .
-CMD ["bash entrypoint.sh"]
