@@ -51,8 +51,9 @@ spec:
     spec:
       priorityClassName: "system-node-critical"
       serviceAccountName: hami-ascend
+      {{- include "hami-vgpu.imagePullSecrets" . | nindent 6}}
       containers:
-        - image: bussanq.hub:5000/bqai/ascend-device-plugin:v1.0.1
+        - image: {{ .Values.imagePrefix }}/ascend-device-plugin:v1.0.1
           imagePullPolicy: IfNotPresent
           name: device-plugin
           resources:
@@ -82,7 +83,7 @@ spec:
               mountPath: /tmp
             - name: ascend-config
               mountPath: /device-config.yaml
-              subPath: ascend-config.yaml
+              subPath: device-config.yaml
               readOnly: true
           env:
             - name: NODE_NAME
@@ -108,10 +109,10 @@ spec:
             path: /tmp
         - name: ascend-config
           configMap:
-            name: hami-scheduler-device
+            name: {{ include "hami-vgpu.scheduler" . }}-device
       tolerations:
         - effect: NoSchedule
-          key: node-role.alibabacloud.com/bmcp-managed
+          key: node-role.bq.com/ai
           operator: Exists
       nodeSelector:
         ascend: "on"

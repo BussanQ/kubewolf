@@ -33,11 +33,11 @@ spec:
       containers:
       {{- if .Values.scheduler.kubeScheduler.enabled }}
         - name: kube-scheduler
-          image: {{ .Values.scheduler.kubeScheduler.image }}
+          image: "{{ .Values.imagePrefix }}/{{ .Values.scheduler.kubeScheduler.image }}:{{ include "resolvedKubeSchedulerTag" . }}"
           imagePullPolicy: {{ .Values.scheduler.kubeScheduler.imagePullPolicy | quote }}
           command:
             - kube-scheduler
-             {{- if ge (.Capabilities.KubeVersion.Minor | substr 0 2| atoi) 22 }}
+             {{- if ge (regexReplaceAll "[^0-9]" .Capabilities.KubeVersion.Minor "" | int) 22 }}
             {{- range .Values.scheduler.kubeScheduler.extraNewArgs }}
             - {{ . }}
             {{- end }}
@@ -50,6 +50,8 @@ spec:
             - --leader-elect={{ .Values.scheduler.leaderElect }}
             - --leader-elect-resource-name={{ .Values.schedulerName }}
             - --leader-elect-resource-namespace={{ .Release.Namespace }}
+          resources:
+          {{- toYaml .Values.scheduler.kubeScheduler.resources | nindent 12 }}
           volumeMounts:
             - name: scheduler-config
               mountPath: /config
@@ -67,7 +69,7 @@ spec:
             timeoutSeconds: 15
           {{- end }}
         - name: vgpu-scheduler-extender
-          image: {{ .Values.scheduler.extender.image }}:{{ .Values.version }}
+          image: {{ .Values.imagePrefix }}/{{ .Values.scheduler.extender.image }}:{{ .Values.version }}
           imagePullPolicy: {{ .Values.scheduler.extender.imagePullPolicy | quote }}
           env:
           {{- if .Values.global.managedNodeSelectorEnable }}
@@ -104,6 +106,8 @@ spec:
             - name: http
               containerPort: 443
               protocol: TCP
+          resources:
+          {{- toYaml .Values.scheduler.extender.resources | nindent 12 }}
           volumeMounts:
             - name: tls-config
               mountPath: /tls
@@ -128,7 +132,7 @@ spec:
         {{- if .Values.scheduler.kubeScheduler.enabled }}
         - name: scheduler-config
           configMap:
-            {{- if ge (.Capabilities.KubeVersion.Minor | substr 0 2| atoi) 22 }}
+            {{- if ge (regexReplaceAll "[^0-9]" .Capabilities.KubeVersion.Minor "" | int) 22 }}
             name: {{ template "hami-vgpu.scheduler" . }}-newversion
             {{- else }}
             name: {{ template "hami-vgpu.scheduler" . }}

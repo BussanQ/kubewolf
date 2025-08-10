@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 2.4.1
+appVersion: 2.5.1
 description: Heterogeneous AI Computing Virtualization Middleware
 keywords:
 - vgpu
@@ -9,4 +9,4 @@ maintainers:
   name: bussanq
 name: hami
 type: application
-version: 2.4.1
+version: 2.5.1

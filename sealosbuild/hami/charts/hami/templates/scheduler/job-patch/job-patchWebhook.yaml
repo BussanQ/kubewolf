@@ -30,10 +30,10 @@ spec:
       {{- end }}
       containers:
         - name: patch
-          {{- if ge (.Capabilities.KubeVersion.Minor | substr 0 2| atoi) 22 }}
-          image: {{ .Values.scheduler.patch.imageNew }}
+          {{- if ge (regexReplaceAll "[^0-9]" .Capabilities.KubeVersion.Minor "" | int) 22 }}
+          image: {{ .Values.imagePrefix }}/{{ .Values.scheduler.patch.imageNew }}
           {{- else }}
-          image: {{ .Values.scheduler.patch.image }}
+          image: {{ .Values.imagePrefix }}/{{ .Values.scheduler.patch.image }}
           {{- end }}
           imagePullPolicy: {{ .Values.scheduler.patch.imagePullPolicy }}
           args:
