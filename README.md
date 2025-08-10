@@ -14,7 +14,8 @@
 - [x] NVIDIA CUDA
 - [x] Ascend CANN
 - [x] Hygon DTK
-
+## 依赖
+- [imagebuild](https://github.com/BussanQ/imagebuild)
 ## 感谢
 - [Sealos](https://github.com/labring/sealos)
 - [Hami](https://github.com/Project-HAMi/HAMi)
