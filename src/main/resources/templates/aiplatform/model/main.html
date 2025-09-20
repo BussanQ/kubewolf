@@ -12,7 +12,7 @@
                 <div class="layui-form-item layui-inline">
                     <label class="layui-form-label">模型名称</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="modelName" lay-verify="title" autocomplete="off" placeholder="请输入模型名称" class="layui-input">
+                        <input type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请输入模型名称" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item layui-inline">
@@ -51,6 +51,9 @@
             <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i
                     class="layui-icon layui-icon-edit"></i>
             </button>
+            <button class="pear-btn pear-btn-success pear-btn-sm" lay-event="run"><i
+                    class="layui-icon layui-icon-play"></i>
+            </button>
             <button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i
                     class="layui-icon layui-icon-delete"></i>
             </button>
@@ -77,11 +80,17 @@
         let table = layui.table;
         let form = layui.form;
         let $ = layui.jquery;
-        let prefix = "/api/v1/model/";
+        let prefix = "/api/v1/models/";
         let cols = [
             [
                 {
-                    field: 'modelName',
+                    field: 'id',
+                    title: '模型ID',
+                    fixed: 'left',
+                    width: 100
+                },
+                {
+                    field: 'name',
                     title: '模型名称',
                     fixed: 'left',
                     width: 200
@@ -102,11 +111,21 @@
                     width: 100
                 },
                 {
+                    field: 'image',
+                    title: '默认镜像',
+                    width: 150
+                },
+                {
+                    field: 'cmd',
+                    title: '启动命令',
+                    width: 150
+                },
+                {
                     field: 'createTime',
                     title: '创建时间',
                     width: 160
                 },
-                {title: '操作', toolbar: '#management-bar', align: 'center', width: 120, fixed: 'right'}
+                {title: '操作', toolbar: '#management-bar', align: 'center', width: 150, fixed: 'right'}
             ]
         ]
 
@@ -141,6 +160,8 @@
                 window.remove(obj);
             } else if (obj.event === 'edit') {
                 window.edit(obj);
+            } else if (obj.event === 'run') {
+                window.run(obj);
             }
         });
 
@@ -173,6 +194,11 @@
                 area: ['550px','450px'],
                 content: '/model/edit?modelId=' + obj.data['modelId']
             });
+        }
+
+        window.run = function (obj) {
+            // 跳转到服务页面，并传递模型ID参数
+            window.location.href = '/serve/main?modelId=' + obj.data['id'];
         }
 
         window.remove = function (obj) {
