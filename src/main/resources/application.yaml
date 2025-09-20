@@ -11,7 +11,7 @@ spring:
       maximum-pool-size: 10
       max-lifetime: 300000
 k8s:
-  config: D:\Download\fsdownload\config
+  config: C:\Users\Administrator\.kube\config
   namespace: default
 oneapi:
   url: ${ONEAPI_URL:http://gateway-one:3000}

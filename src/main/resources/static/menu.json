@@ -37,16 +37,16 @@
         "children": [],
         "username": null
       },
-      {
-        "id": "90034",
-        "title": "模型管理",
-        "type": "1",
-        "openType": "_iframe",
-        "icon": "layui-icon  layui-icon-console",
-        "href": "/trainedModel/main",
-        "children": [],
-        "username": null
-      }
+        {
+            "id": "90034",
+            "title": "模型管理",
+            "type": "1",
+            "openType": "_iframe",
+            "icon": "layui-icon  layui-icon-console",
+            "href": "/model/main",
+            "children": [],
+            "username": null
+        }
     ],
     "username": null
   },

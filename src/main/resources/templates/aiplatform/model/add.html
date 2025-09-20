@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="zh" >
+<html lang="zh">
 <head>
-    #@header("部署模型")
+    #@header("添加模型")
 </head>
 <body>
 <form class="layui-form">
@@ -9,52 +9,47 @@
         <div class="main-container layui-row">
             <div class="layui-col-md6">
                 <div class="layui-form-item">
-                    <label class="layui-form-label">服务名称：</label>
+                    <label class="layui-form-label">模型名称：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="taskName" lay-verify="required" placeholder="请输入服务名称，仅支持小写字母和数字" class="layui-input" lay-required/>
+                        <input type="text" name="modelName" lay-verify="required" placeholder="请输入模型名称" class="layui-input" lay-required/>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">模型地址：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="modelPath" lay-verify="required" placeholder="请输入模型地址" class="layui-input" lay-required/>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">推理框架：</label>
                     <div class="layui-input-block">
-                        <select name="backend" lay-required>
+                        <select name="framework" lay-required>
                             <option value=""></option>
                             <option value="ollama">ollama</option>
                             <option value="vllm">vllm</option>
+                            <option value="tensorflow">TensorFlow</option>
+                            <option value="pytorch">PyTorch</option>
                         </select>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">模型：</label>
+                    <label class="layui-form-label">版本号：</label>
                     <div class="layui-input-block">
-                        <select name="taskId" lay-required>
-                            <option value=""></option>
-                            <option value="UXdlbjIuNS0wLjVCLUluc3RydWN0">Qwen2.5-0.5B-Instruct</option>
-                            <option value="UXdlbjIuNS0wLjVCLUluc3RydW">Ollama-0.5B</option>
-                            <option value="RGVlcFNlZWstRGlzdGlsbC03Qg==">DeepSeek-Distill-7B</option>
-                        </select>
+                        <input type="text" name="version" placeholder="请输入版本号" class="layui-input"/>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">实例数量：</label>
+                    <label class="layui-form-label">描述：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="replicas" placeholder="请输入实例数量" class="layui-input"/>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">镜像：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="image" placeholder="请输入镜像名称" class="layui-input"/>
+                        <textarea name="description" placeholder="请输入描述" class="layui-textarea"></textarea>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
     <div class="bottom">
         <div class="button-container">
-            <button type="submit" class="layui-btn layui-btn-normal layui-btn-sm" lay-submit=""
-                    lay-filter="management-save">
+            <button type="submit" class="layui-btn layui-btn-normal layui-btn-sm" lay-submit lay-filter="management-save">
                 <i class="layui-icon layui-icon-ok"></i>
                 提交
             </button>
@@ -70,10 +65,10 @@
     layui.use(['form', 'jquery'], function () {
         let form = layui.form;
         let $ = layui.jquery;
-        let prefix = "/api/v1/serve/";
+        let prefix = "/api/v1/model/";
         form.on('submit(management-save)', function (data) {
             $.ajax({
-                url: prefix + 'startModel',
+                url: prefix + 'save',
                 data: JSON.stringify(data.field),
                 dataType: 'json',
                 contentType: 'application/json',
