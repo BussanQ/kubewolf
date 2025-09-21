@@ -18,7 +18,7 @@ public class FrameWorkService {
                 InferFrameWork framework = new InferFrameWork();
                 framework.setName("vllm");
                 framework.setCmd("vllm serve /model -tp 1 --host 0.0.0.0 --port 8080 --served-model-name qwen");
-                framework.setImage("vllm-openapi:latest");
+                framework.setImage("swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/vllm/vllm-openai:v0.9.2");
                 framework.setPort("8080");
 //                framework.setExtraArgs("--model_config_file=/app/models.config");
                 return framework;
