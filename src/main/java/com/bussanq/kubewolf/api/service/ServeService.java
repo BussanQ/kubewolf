@@ -3,6 +3,7 @@ package com.bussanq.kubewolf.api.service;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bussanq.kubewolf.ai.service.AIService;
+import com.bussanq.kubewolf.api.model.InferFrameWork;
 import com.bussanq.kubewolf.api.model.TaskInfo;
 import com.bussanq.kubewolf.api.model.dto.ModelTpl;
 import com.bussanq.kubewolf.api.model.dto.ServeTask;
@@ -32,6 +33,8 @@ public class ServeService {
 
     @Autowired
     ModelService modelService;
+    @Autowired
+    FrameWorkService frameWorkService;
 
     public boolean save(ServeTask serveTask) {
         ServeTask old = findByName(serveTask.getTaskName());
@@ -100,12 +103,17 @@ public class ServeService {
     }
 
     public boolean startModel(ServeTaskReq taskReq) {
-        ModelTpl modelTpl = modelService.findById(taskReq.getTaskId());
+        ModelTpl modelTpl = modelService.findById(taskReq.getModelCode());
         if (modelTpl == null) {
             throw new RuntimeException("未找到模型");
         }
+        InferFrameWork frameWork = frameWorkService.getFrame(taskReq.getType());
         ServeTask serveTask = convertModel(modelTpl);
         serveTask.setTaskName(taskReq.getTaskName());
+        serveTask.setType(taskReq.getType());
+        serveTask.setCmd(frameWork.getCmd());
+        serveTask.setImage(frameWork.getImage());
+        serveTask.setPort(frameWork.getPort());
         save(serveTask);
         TaskInfo taskInfo = aiService.startServing(serveTask);
         return taskInfo != null;
