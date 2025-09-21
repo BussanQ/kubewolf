@@ -102,7 +102,7 @@ spec:
         #if(model_path)
         - name: model
           persistentVolumeClaim:
-            claimName: model
+            claimName: #(model_code)
         #end
         - emptyDir: {}
           name: code-sync

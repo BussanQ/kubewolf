@@ -103,7 +103,7 @@ public class ServeService {
     }
 
     public boolean startModel(ServeTaskReq taskReq) {
-        ModelTpl modelTpl = modelService.findById(taskReq.getModelCode());
+        ModelTpl modelTpl = modelService.findById(taskReq.getModelId());
         if (modelTpl == null) {
             throw new RuntimeException("未找到模型");
         }
@@ -128,7 +128,7 @@ public class ServeService {
             throw new RuntimeException(e);
         }
         serveTask.setTaskId(IdUtil.fastSimpleUUID());
-        serveTask.setTaskName(modelTpl.getName());
+        serveTask.setModelCode(modelTpl.getCode());
         return serveTask;
     }
 

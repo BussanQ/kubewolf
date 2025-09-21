@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class ServeTaskReq {
     String taskId;
-    String modelCode;
+    String modelId;
     String taskName;
     String type;
 }

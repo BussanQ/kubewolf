@@ -2,17 +2,8 @@ package com.bussanq.kubewolf.api.service;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
-import com.bussanq.kubewolf.ai.service.AIService;
-import com.bussanq.kubewolf.api.model.TaskInfo;
 import com.bussanq.kubewolf.api.model.dto.ModelTpl;
-import com.bussanq.kubewolf.api.model.dto.ServeTask;
-import com.bussanq.kubewolf.common.utils.DbUtil;
-import com.bussanq.kubewolf.web.model.vo.ServeTaskReq;
-import com.jfinal.kit.Kv;
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.Page;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -33,9 +24,6 @@ public class ModelService {
         serveTask.setUpdateTime(now);
         if(StrUtil.isBlank(serveTask.getType())) {
             serveTask.setType("run");
-        }
-        if (serveTask.getReplicas() == null || serveTask.getReplicas() == 0) {
-            serveTask.setReplicas(1);
         }
         return serveTask.save();
     }
