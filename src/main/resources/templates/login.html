@@ -12,10 +12,10 @@
         <div class="title">AI Infra</div>
     </div>
     <div class="layui-form-item">
-        <input name="userName" value="admin" type="text" placeholder="请输入账户" value="admin" hover class="layui-input"  />
+        <input name="userName" value="admin" type="text" placeholder="请输入账户" autocomplete="username" class="layui-input" />
     </div>
     <div class="layui-form-item">
-        <input name="passWord" value="1234567" type="password" placeholder="请输入密码" hover class="layui-input"  />
+        <input name="passWord" type="password" placeholder="请输入密码" autocomplete="current-password" class="layui-input" />
     </div>
     <div class="layui-form-item">
         <button class="pear-btn pear-btn-success login" lay-submit lay-filter="login">
@@ -25,11 +25,11 @@
 </form>
 #@footer()
 <script>
-    layui.use(['form','jquery','layer','hash'], function() {
+    layui.use(['form','jquery','layer'], function() {
         let form = layui.form;
         let $ = layui.jquery;
         let layer = layui.layer;
-        var hash = layui.hash;
+
 
         form.on('submit(login)', function(data){
             let loader = layer.load();
@@ -38,15 +38,16 @@
                 url:'/login',
                 data:{
                     "userName": data.field['userName'],
-                    "passWord": hash.sha256(data.field['passWord'])
+                    "passWord": data.field['passWord']
                 },
                 type:"post",
                 dataType:'json',
+                complete:function(){ layer.close(loader); $(".login").text("登 入"); },
                 success:function(result){
                     layer.close(loader);
                     if(result.code == 200){
                         layer.msg(result.message,{icon:1,time:1000},function(){
-                            location.href = "/index";
+                            location.href = "/";
                         })
                     }else{
                         layer.msg(result.message,{icon:2,time:1000});

@@ -90,35 +90,25 @@
                     width: 100
                 },
                 {
-                    field: 'name',
+                    field: 'name', templet: function(d){ return $('<div>').text(d.name || '').html(); },
                     title: '模型名称',
                     fixed: 'left',
                     width: 200
                 },
                 {
-                    field: 'modelPath',
+                    field: 'modelPath', templet: function(d){ return $('<div>').text(d.modelPath || '').html(); },
                     title: '模型地址',
                     width: 300
                 },
                 {
-                    field: 'framework',
+                    field: 'type',
                     title: '框架',
                     width: 120
                 },
                 {
-                    field: 'version',
-                    title: '版本',
+                    field: 'code', templet: function(d){ return $('<div>').text(d.code || '').html(); },
+                    title: 'PVC',
                     width: 100
-                },
-                {
-                    field: 'image',
-                    title: '默认镜像',
-                    width: 150
-                },
-                {
-                    field: 'cmd',
-                    title: '启动命令',
-                    width: 150
                 },
                 {
                     field: 'createTime',
@@ -192,13 +182,13 @@
                 title: '修改模型',
                 shade: 0.1,
                 area: ['550px','450px'],
-                content: '/model/edit?modelId=' + obj.data['modelId']
+                content: '/model/edit?id=' + encodeURIComponent(obj.data['id'])
             });
         }
 
         window.run = function (obj) {
             // 跳转到服务页面，并传递模型ID参数
-            window.location.href = '/serve/main?modelId=' + obj.data['id'];
+            layer.open({type:2,title:'部署模型',area:['700px','650px'],content:'/serve/add?modelId='+encodeURIComponent(obj.data.id)});
         }
 
         window.remove = function (obj) {
@@ -208,7 +198,7 @@
                 $.ajax({
                     url: prefix + "delete",
                     data: JSON.stringify({
-                        modelId: obj.data['modelId']
+                        id: obj.data['id']
                     }),
                     dataType: 'json',
                     contentType: 'application/json',
@@ -228,7 +218,7 @@
         }
 
         window.refresh = function (param) {
-            table.reload('management-table', {where: param});
+            table.reload('management-table', {where: param, page:{curr:1}});
         }
     })
 </script>

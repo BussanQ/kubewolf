@@ -1,5 +1,9 @@
 # Repository Guidelines
 
+## 项目准则
+
+尽量保持简洁，优先复用现有实现和依赖；非必要不加入新的依赖。
+
 ## Project Structure & Module Organization
 
 This is a single-module Spring Boot application. Java sources live under `src/main/java/com/bussanq/kubewolf/`: `api` contains REST controllers, services, and database models; `ai` handles inference deployment and Kubernetes events; `common` provides infrastructure utilities; `web` handles pages and view configuration.

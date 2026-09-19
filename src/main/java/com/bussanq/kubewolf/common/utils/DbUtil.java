@@ -37,18 +37,18 @@ public class DbUtil {
     }
 
     public static <T extends Model<T>> Page<T> searchPage(T model, Kv conditionKv, Page page) {
-        int pageNumber = page.getPageNumber() == 0 ? 1 : page.getPageNumber();
-        int pageSize = page.getPageSize() == 0 ? 10 : page.getPageSize();
+        int pageNumber = Math.max(1, page.getPageNumber());
+        int pageSize = page.getPageSize() <= 0 ? 10 : Math.min(100, page.getPageSize());
         String tableName = TableMapping.me().getTable(model.getClass()).getName();
         return model.template(search, Kv.by(condition, conditionKv).set(table, tableName)).
                 paginate(pageNumber, pageSize);
     }
 
     public static <T extends Model<T>> Page<T> searchPageOrder(T model, Kv conditionKv, Page page, String orderBy) {
-        int pageNumber = page.getPageNumber() == 0 ? 1 : page.getPageNumber();
-        int pageSize = page.getPageSize() == 0 ? 10 : page.getPageSize();
+        int pageNumber = Math.max(1, page.getPageNumber());
+        int pageSize = page.getPageSize() <= 0 ? 10 : Math.min(100, page.getPageSize());
         String tableName = TableMapping.me().getTable(model.getClass()).getName();
-        return model.template(search, Kv.by(condition, conditionKv).set(table, tableName).set(orderCol, orderBy)).
+        return model.template("searchOrder", Kv.by(condition, conditionKv).set(table, tableName).set(orderCol, orderBy)).
                 paginate(pageNumber, pageSize);
     }
 

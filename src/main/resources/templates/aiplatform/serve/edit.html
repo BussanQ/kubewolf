@@ -1,154 +1,30 @@
-<!DOCTYPE html>
-<html lang="zh" >
-<head>
-    #@header("修改服务")
-</head>
-<body>
-<form class="layui-form">
-    <div class="mainBox">
-        <div class="main-container layui-row">
-            <div class="layui-col-md6">
-                <input name="taskId" value="#(serveTask.taskId)" type="hidden">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">服务名称：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="taskName" value="#(serveTask.taskName)"
-                               lay-verify="required" placeholder="请输入服务名称" class="layui-input" lay-required/>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">类型：</label>
-                    <div class="layui-input-block">
-                        <select name="type" lay-required>
-                            <option value=""></option>
-                            <option value="TFJob">TFJob</option>
-                            <option value="PyTorchJob">PyTorchJob</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">镜像：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="image" value="#(serveTask.image)"
-                               lay-verify="required" placeholder="请输入镜像名称" class="layui-input" lay-required/>
-                    </div>
-                </div>
-
-
-                <div class="layui-form-item">
-                    <label class="layui-form-label">实例数量：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="replicas"  value="#(serveTask.replicas)"
-                               placeholder="请输入实例数量" class="layui-input"/>
-                    </div>
-                </div>
-
-                <div class="layui-form-item">
-                    <label class="layui-form-label">模型路径：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="modelPath" value="#(serveTask.modelPath)"
-                               placeholder="请输入日志目录" class="layui-input"/>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">启动命令：</label>
-                    <div class="layui-input-block">
-                        <textarea name="cmd"  value="#(serveTask.cmd)"
-                                  placeholder="请输入启动命令" class="layui-textarea"></textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="layui-col-md6">
-
-                <div class="layui-form-item">
-                    <label class="layui-form-label">端口：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="port"  value="#(serveTask.port)"
-                               placeholder="请输入端口号" class="layui-input"/>
-                    </div>
-                </div>
-
-                <div class="layui-form-item">
-                    <label class="layui-form-label">CPU：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="cpu" value="#(serveTask.cpu)"
-                               placeholder="请输入cpu" class="layui-input"/>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">内存：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="mem" value="#(serveTask.mem)"
-                               placeholder="请输入内存" class="layui-input"/>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">GPU数量：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="gpu"  value="#(serveTask.gpu)"
-                               placeholder="请输入GPU数量" class="layui-input"/>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">代码git：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="codeId" placeholder="请输入代码git地址" class="layui-input"/>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">环境变量：</label>
-                    <div class="layui-input-block">
-                        <textarea name="env" value="#(serveTask.env)" placeholder="请输入环境变量" class="layui-textarea"></textarea>
-                    </div>
-                </div>
-            </div>
-
-
-        </div>
-    </div>
-    <div class="bottom">
-        <div class="button-container">
-            <button type="submit" class="layui-btn layui-btn-normal layui-btn-sm" lay-submit=""
-                    lay-filter="management-save">
-                <i class="layui-icon layui-icon-ok"></i>
-                提交
-            </button>
-            <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">
-                <i class="layui-icon layui-icon-refresh"></i>
-                重置
-            </button>
-        </div>
-    </div>
-</form>
-#@footer()
-<script>
-    layui.use(['form', 'jquery'], function () {
-        let form = layui.form;
-        let $ = layui.jquery;
-        let prefix = "/api/v1/serve/";
-        $("#type").val("#(serveTask.type)");
-        form.render('select');
-        form.on('submit(management-save)', function (data) {
-            $.ajax({
-                url: prefix + 'update',
-                data: JSON.stringify(data.field),
-                dataType: 'json',
-                contentType: 'application/json',
-                type: 'post',
-                success: function (result) {
-                    if (result.code == 200) {
-                        layer.msg(result.message, {icon: 1, time: 1000}, function () {
-                            parent.layer.close(parent.layer.getFrameIndex(window.name));
-                            parent.layui.table.reload("management-table");
-                        });
-                    } else {
-                        layer.msg(result.message, {icon: 2, time: 1000});
-                    }
-                }
-            })
-            return false;
-        });
-    });
-</script>
-</body>
-</html>
+<!DOCTYPE html><html lang="zh"><head>#@header("修改服务")</head>
+<body class="pear-container"><form class="layui-form" lay-filter="editor" style="padding:20px">
+<input type="hidden" name="taskId">
+<label>服务名称</label><input class="layui-input" name="taskName" readonly>
+<label>类型</label><select name="type"><option value="run">自定义服务</option><option value="vllm">vLLM</option><option value="sglang">SGLang</option></select>
+<label>镜像</label><input class="layui-input" name="image" required lay-verify="required">
+<label>实例数量</label><input class="layui-input" type="number" name="replicas" min="1" max="100" required>
+<label>端口</label><input class="layui-input" type="number" name="port" min="1" max="65535" required>
+<label>CPU（毫核）</label><input class="layui-input" type="number" name="cpu" min="1" required>
+<label>内存（MiB）</label><input class="layui-input" type="number" name="mem" min="1" required>
+<label>GPU 数量</label><input class="layui-input" type="number" name="gpu" min="0" required>
+<label>GPU 资源名称</label><input class="layui-input" name="gpuResource">
+<label>模型 PVC</label><input class="layui-input" name="modelCode">
+<label>模型挂载路径</label><input class="layui-input" name="modelPath">
+<label>启动命令</label><textarea class="layui-textarea" name="cmd" maxlength="1000"></textarea>
+<label>环境变量</label><textarea class="layui-textarea" name="env" maxlength="1000"></textarea>
+<button class="layui-btn" style="margin-top:16px" lay-submit lay-filter="save">保存</button>
+</form>#@footer()<script>
+layui.use(['form','jquery','layer'], function () {
+const form = layui.form, $ = layui.jquery, layer = layui.layer;
+const taskId=new URLSearchParams(location.search).get('taskId');
+$.getJSON('/api/v1/serve/get',{taskId:taskId}).done(function(res){form.val('editor',res.data);});
+form.on('submit(save)',function(data){
+    ['replicas','port','cpu','mem','gpu'].forEach(function(k){data.field[k]=Number(data.field[k]);});
+    $.ajax({url:'/api/v1/serve/update',type:'POST',contentType:'application/json',data:JSON.stringify(data.field)})
+      .done(function(){parent.layui.table.reload('management-table');parent.layer.close(parent.layer.getFrameIndex(window.name));});
+    return false;
+});
+});
+</script></body></html>

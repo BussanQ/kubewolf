@@ -21,6 +21,9 @@ public class ModelPageC {
         return prefix + "/main";
     }
     
+    @GetMapping("/edit")
+    public String edit() { return prefix + "/add"; }
+
     @GetMapping("/add")
     public String add() {
         return prefix + "/add";

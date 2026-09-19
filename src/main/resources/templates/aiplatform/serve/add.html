@@ -1,97 +1,31 @@
-<!DOCTYPE html>
-<html lang="zh" >
-<head>
-    #@header("部署模型")
-</head>
-<body>
-<form class="layui-form">
-    <div class="mainBox">
-        <div class="main-container layui-row">
-            <div class="layui-col-md6">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">服务名称：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="taskName" lay-verify="required" placeholder="请输入服务名称，仅支持小写字母和数字" class="layui-input" lay-required/>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">推理框架：</label>
-                    <div class="layui-input-block">
-                        <select name="type" lay-required>
-                            <option value=""></option>
-                            <option value="ollama">ollama</option>
-                            <option value="vllm">vllm</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">模型：</label>
-                    <div class="layui-input-block">
-                        <select name="modelId" lay-required>
-                            <option value=""></option>
-                            <option value="UXdlbjIuNS0wLjVCLUluc3RydWN0">Qwen2.5-0.5B-Instruct</option>
-                            <option value="UXdlbjIuNS0wLjVCLUluc3RydW">Ollama-0.5B</option>
-                            <option value="RGVlcFNlZWstRGlzdGlsbC03Qg==">DeepSeek-Distill-7B</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">实例数量：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="replicas" placeholder="请输入实例数量" class="layui-input"/>
-                    </div>
-                </div>
-<!--                <div class="layui-form-item">-->
-<!--                    <label class="layui-form-label">镜像：</label>-->
-<!--                    <div class="layui-input-block">-->
-<!--                        <input type="text" name="image" placeholder="请输入镜像名称" class="layui-input"/>-->
-<!--                    </div>-->
-<!--                </div>-->
-            </div>
-
-        </div>
-    </div>
-    <div class="bottom">
-        <div class="button-container">
-            <button type="submit" class="layui-btn layui-btn-normal layui-btn-sm" lay-submit=""
-                    lay-filter="management-save">
-                <i class="layui-icon layui-icon-ok"></i>
-                提交
-            </button>
-            <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">
-                <i class="layui-icon layui-icon-refresh"></i>
-                重置
-            </button>
-        </div>
-    </div>
-</form>
-#@footer()
-<script>
-    layui.use(['form', 'jquery'], function () {
-        let form = layui.form;
-        let $ = layui.jquery;
-        let prefix = "/api/v1/serve/";
-        form.on('submit(management-save)', function (data) {
-            $.ajax({
-                url: prefix + 'startModel',
-                data: JSON.stringify(data.field),
-                dataType: 'json',
-                contentType: 'application/json',
-                type: 'post',
-                success: function (result) {
-                    if (result.code == 200) {
-                        layer.msg(result.message, {icon: 1, time: 1000}, function () {
-                            parent.layer.close(parent.layer.getFrameIndex(window.name));
-                            parent.layui.table.reload("management-table");
-                        });
-                    } else {
-                        layer.msg(result.message, {icon: 2, time: 1000});
-                    }
-                }
-            })
-            return false;
-        });
+<!DOCTYPE html><html lang="zh"><head>#@header("部署模型")</head>
+<body class="pear-container"><form class="layui-form" lay-filter="editor" style="padding:20px">
+<label>服务名称</label><input class="layui-input" name="taskName" required lay-verify="required" placeholder="小写字母、数字和连字符" maxlength="63">
+<label>搜索模型</label><div style="display:flex"><input id="model-search" class="layui-input" placeholder="输入模型名称"><button type="button" id="search-model" class="layui-btn">搜索</button></div>
+<label>模型</label><select name="modelId" id="model-select" lay-verify="required"></select>
+<label>推理框架</label><select name="type"><option value="vllm">vLLM</option><option value="sglang">SGLang</option></select>
+<label>实例数量</label><input class="layui-input" type="number" name="replicas" min="1" max="100" value="1" required>
+<p>模型需要已创建的 PVC 和可用 GPU。部署结果及失败原因可在服务列表查看。</p>
+<button class="layui-btn" style="margin-top:16px" lay-submit lay-filter="save">保存</button>
+</form>#@footer()<script>
+layui.use(['form','jquery','layer'], function () {
+const form = layui.form, $ = layui.jquery, layer = layui.layer;
+const selected = new URLSearchParams(location.search).get('modelId');
+function addOption(model) { $('#model-select').append($('<option>').val(model.id).text(model.name)); }
+function loadModels() {
+    $.getJSON('/api/v1/models/list',{pageNum:1,pageSize:100,name:$('#model-search').val()}).done(function(res) {
+        $('#model-select').empty(); res.data.forEach(addOption);
+        if(selected && !res.data.some(function(m){return m.id===selected;})) {
+            $.getJSON('/api/v1/models/get',{id:selected}).done(function(r){addOption(r.data);$('#model-select').val(selected);form.render('select');});
+        } else { if(selected) $('#model-select').val(selected);form.render('select'); }
     });
-</script>
-</body>
-</html>
+}
+$('#search-model').on('click',loadModels); loadModels();
+form.on('submit(save)',function(data){
+    data.field.replicas=Number(data.field.replicas);
+    $.ajax({url:'/api/v1/serve/startModel',type:'POST',contentType:'application/json',data:JSON.stringify(data.field)})
+      .done(function(){parent.layui.table.reload('management-table');parent.layer.close(parent.layer.getFrameIndex(window.name));});
+    return false;
+});
+});
+</script></body></html>

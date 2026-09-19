@@ -1,15 +1,14 @@
 package com.bussanq.kubewolf.web.model.vo;
 
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
-/**
- * @author bussanq
- * @date 2024/11/17
- */
 @Data
 public class ServeTaskReq {
-    String taskId;
-    String modelId;
-    String taskName;
-    String type;
+    @Size(max = 32) private String taskId;
+    @Size(max = 63) private String taskName;
+    @AssertTrue(message = "必须提供 taskId 或 taskName")
+    public boolean isTargetPresent() {
+        return (taskId != null && !taskId.isBlank()) || (taskName != null && !taskName.isBlank());
+    }
 }

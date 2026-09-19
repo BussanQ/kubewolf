@@ -37,6 +37,9 @@ public class JFinalView extends AbstractTemplateView {
 
     @Override
     protected void renderMergedTemplateModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        var csrf = (org.springframework.security.web.csrf.CsrfToken) request.getAttribute("_csrf");
+        model.put("csrfToken", csrf == null ? "" : csrf.getToken());
+        model.put("csrfHeader", csrf == null ? "X-CSRF-TOKEN" : csrf.getHeaderName());
         if (JFinalViewResolver.sessionInView) {
             HttpSession hs = request.getSession(JFinalViewResolver.createSession);
             if (hs != null) {

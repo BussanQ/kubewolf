@@ -29,28 +29,38 @@ public class K8sService {
 
     private KubernetesClient client;
 
-    private static String currentNamespace = "default";
+    private String currentNamespace = "default";
 
-    public void init(K8sProperties k8sProperties) {
+    public synchronized void init(K8sProperties properties) {
+        currentNamespace = properties.getNamespace();
+        if (!properties.isEnabled() || client != null) return;
         try {
-            String configStr = k8sProperties.getConfig();
-            if (configStr == null) {
-                log.error("未读取到配置，初始化 K8sService 失败");
-                return;
+            String path = properties.getConfig();
+            Config config;
+            if (StrUtil.isNotBlank(path)) {
+                try (InputStream in = ResourceUtil.getStream(path)) {
+                    config = Config.fromKubeconfig(IoUtil.read(in, java.nio.charset.StandardCharsets.UTF_8));
+                }
+            } else {
+                config = Config.autoConfigure(null);
             }
-            if (StrUtil.isNotBlank(configStr)){
-                String configData = IoUtil.read(ResourceUtil.getStream(configStr), Charset.defaultCharset());
-                Config config = Config.fromKubeconfig(configData);
-                client = new KubernetesClientBuilder().withConfig(config).build();
-            }else {
-                client = new KubernetesClientBuilder().build();
-            }
-            if (StrUtil.isNotBlank(k8sProperties.getNamespace())) {
-                currentNamespace = k8sProperties.getNamespace();
-            }
+            config.setNoProxy(properties.getNoProxy());
+            config.setNamespace(currentNamespace);
+            config.setConnectionTimeout(properties.getConnectionTimeout());
+            config.setRequestTimeout(properties.getRequestTimeout());
+            client = new KubernetesClientBuilder().withConfig(config).build();
         } catch (Exception e) {
-            log.error("初始化 K8sService 失败", e);
+            log.warn("Kubernetes client unavailable: {}", e.getClass().getSimpleName());
         }
+    }
+
+    public KubernetesClient requireClient() {
+        if (client == null) throw new com.bussanq.kubewolf.common.error.ApiException(503, "Kubernetes 暂不可用");
+        return client;
+    }
+
+    public void close() {
+        if (client != null) client.close();
     }
 
     public boolean apply (String yaml) {
@@ -179,7 +189,7 @@ public class K8sService {
             ConfigMap configMap = new ConfigMapBuilder().withNewMetadata().withName(name)
                     .endMetadata().addToData(key, value)
                     .build();
-            client.configMaps().inNamespace(currentNamespace).resource(configMap).serverSideApply();
+            client.configMaps().inNamespace(namespace).resource(configMap).serverSideApply();
             return true;
         } catch (Exception e) {
             log.error("执行createConfigMap异常", e);

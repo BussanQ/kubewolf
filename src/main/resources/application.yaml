@@ -2,17 +2,46 @@ spring:
   application:
     name: kubewolf
   datasource:
-    url: ${MYSQL_URL:jdbc:mysql://127.0.0.1:3306/bqinfra?allowMultiQueries=true&useUnicode=true&characterEncoding=utf8&useSSL=false&zeroDateTimeBehavior=convertToNull}
+    url: ${MYSQL_URL:jdbc:mysql://127.0.0.1:3306/bqinfra?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&zeroDateTimeBehavior=convertToNull}
     username: ${MYSQL_USERNAME:root}
     password: ${MYSQL_PASSWORD:bq}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      minimum-idle: 10
+      minimum-idle: 2
       maximum-pool-size: 10
+      connection-timeout: 5000
+      validation-timeout: 2000
+      idle-timeout: 120000
       max-lifetime: 300000
+  flyway:
+    baseline-on-migrate: true
+    baseline-version: 0
+    clean-disabled: true
+  task:
+    scheduling:
+      pool:
+        size: 2
+server:
+  shutdown: graceful
+  servlet:
+    session:
+      timeout: 30m
+      cookie:
+        http-only: true
+        same-site: lax
 k8s:
-  config: C:\Users\Administrator\.kube\config
-  namespace: default
+  enabled: ${K8S_ENABLED:true}
+  config: ${K8S_CONFIG:}
+  namespace: ${K8S_NAMESPACE:default}
+  connection-timeout: 3000
+  request-timeout: 10000
 oneapi:
+  enabled: ${ONEAPI_ENABLED:true}
   url: ${ONEAPI_URL:http://gateway-one:3000}
-  accessToken: ${ONEAPI_ACCESS_TOKEN:token}
+  accessToken: ${ONEAPI_ACCESS_TOKEN:}
+auth:
+  admin-password: ${KUBEWOLF_ADMIN_PASSWORD:}
+  viewer-password: ${KUBEWOLF_VIEWER_PASSWORD:}
+inference:
+  vllm-image: ${VLLM_IMAGE:swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/vllm/vllm-openai:v0.9.2}
+  sglang-image: ${SGLANG_IMAGE:lmsysorg/sglang:latest}

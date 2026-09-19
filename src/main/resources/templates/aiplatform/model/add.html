@@ -1,92 +1,22 @@
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-    #@header("添加模型")
-</head>
-<body>
-<form class="layui-form">
-    <div class="mainBox">
-        <div class="main-container layui-row">
-            <div class="layui-col-md6">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">模型名称：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="modelName" lay-verify="required" placeholder="请输入模型名称" class="layui-input" lay-required/>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">模型地址：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="modelPath" lay-verify="required" placeholder="请输入模型地址" class="layui-input" lay-required/>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">推理框架：</label>
-                    <div class="layui-input-block">
-                        <select name="framework" lay-required>
-                            <option value=""></option>
-                            <option value="ollama">ollama</option>
-                            <option value="vllm">vllm</option>
-                            <option value="tensorflow">TensorFlow</option>
-                            <option value="pytorch">PyTorch</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">版本号：</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="version" placeholder="请输入版本号" class="layui-input"/>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">描述：</label>
-                    <div class="layui-input-block">
-                        <textarea name="description" placeholder="请输入描述" class="layui-textarea"></textarea>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="bottom">
-        <div class="button-container">
-            <button type="submit" class="layui-btn layui-btn-normal layui-btn-sm" lay-submit lay-filter="management-save">
-                <i class="layui-icon layui-icon-ok"></i>
-                提交
-            </button>
-            <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">
-                <i class="layui-icon layui-icon-refresh"></i>
-                重置
-            </button>
-        </div>
-    </div>
-</form>
-#@footer()
-<script>
-    layui.use(['form', 'jquery'], function () {
-        let form = layui.form;
-        let $ = layui.jquery;
-        let prefix = "/api/v1/model/";
-        form.on('submit(management-save)', function (data) {
-            $.ajax({
-                url: prefix + 'save',
-                data: JSON.stringify(data.field),
-                dataType: 'json',
-                contentType: 'application/json',
-                type: 'post',
-                success: function (result) {
-                    if (result.code == 200) {
-                        layer.msg(result.message, {icon: 1, time: 1000}, function () {
-                            parent.layer.close(parent.layer.getFrameIndex(window.name));
-                            parent.layui.table.reload("management-table");
-                        });
-                    } else {
-                        layer.msg(result.message, {icon: 2, time: 1000});
-                    }
-                }
-            })
-            return false;
-        });
-    });
-</script>
-</body>
-</html>
+<!DOCTYPE html><html lang="zh"><head>#@header("模型配置")</head>
+<body class="pear-container"><form class="layui-form" lay-filter="editor" style="padding:20px">
+<input type="hidden" name="id">
+<label>模型名称</label><input class="layui-input" name="name" maxlength="255" required lay-verify="required">
+<label>PVC 名称</label><input class="layui-input" name="code" maxlength="63" required lay-verify="required" placeholder="模型文件所在的 PVC 名称">
+<label>容器挂载路径</label><input class="layui-input" name="modelPath" value="/model" readonly>
+<label>推理框架</label><select name="type"><option value="vllm">vLLM</option><option value="sglang">SGLang</option></select>
+<label>环境变量</label><textarea class="layui-textarea" name="env" maxlength="1000" placeholder="NAME:value;NAME2:value"></textarea>
+<label>备注</label><textarea class="layui-textarea" name="custom" maxlength="1000"></textarea>
+<button class="layui-btn" style="margin-top:16px" lay-submit lay-filter="save">保存</button>
+</form>#@footer()<script>
+layui.use(['form','jquery','layer'], function () {
+const form = layui.form, $ = layui.jquery, layer = layui.layer;
+const id = new URLSearchParams(location.search).get('id');
+if (id) $.getJSON('/api/v1/models/get', {id:id}).done(function(res) { form.val('editor',res.data); });
+form.on('submit(save)', function(data) {
+    $.ajax({url:'/api/v1/models/'+(id?'update':'create'),type:'POST',contentType:'application/json',data:JSON.stringify(data.field)})
+      .done(function() { parent.layui.table.reload('management-table'); parent.layer.close(parent.layer.getFrameIndex(window.name)); });
+    return false;
+});
+});
+</script></body></html>

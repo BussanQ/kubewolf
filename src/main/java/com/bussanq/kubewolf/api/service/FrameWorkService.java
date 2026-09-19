@@ -1,36 +1,31 @@
 package com.bussanq.kubewolf.api.service;
 
 import com.bussanq.kubewolf.api.model.InferFrameWork;
-import lombok.extern.slf4j.Slf4j;
+import com.bussanq.kubewolf.common.error.ApiException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-/**
- * @author bussanq
- * @date 2025/02/25
- */
-@Slf4j
 @Service
 public class FrameWorkService {
+    @Value("${inference.vllm-image}") private String vllmImage;
+    @Value("${inference.sglang-image}") private String sglangImage;
 
-    public InferFrameWork getFrame(String frameName) {
-        switch (frameName){
-            case "vllm":
-                InferFrameWork framework = new InferFrameWork();
-                framework.setName("vllm");
-                framework.setCmd("vllm serve /model -tp 1 --host 0.0.0.0 --port 8080 --served-model-name qwen");
-                framework.setImage("swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/vllm/vllm-openai:v0.9.2");
-                framework.setPort("8080");
-//                framework.setExtraArgs("--model_config_file=/app/models.config");
-                return framework;
-            case "sglang":
-                InferFrameWork sglang = new InferFrameWork();
-                sglang.setName("sglang");
-                sglang.setCmd("python3 -m sglang.launch_server --model-path /model --tp 1 --host 0.0.0.0 --port=8080  --served-model-name qwen");
-                sglang.setImage("sglang:latest");
-                sglang.setPort("8080");
-            default:
-                return new InferFrameWork();
+    public InferFrameWork getFrame(String name) {
+        if (name == null) throw new ApiException(400, "请选择推理框架");
+        InferFrameWork frame = new InferFrameWork();
+        frame.setName(name);
+        frame.setPort("8080");
+        switch (name) {
+            case "vllm" -> {
+                frame.setCmd("vllm serve /model -tp 1 --host 0.0.0.0 --port 8080 --served-model-name model");
+                frame.setImage(vllmImage);
+            }
+            case "sglang" -> {
+                frame.setCmd("python3 -m sglang.launch_server --model-path /model --tp 1 --host 0.0.0.0 --port 8080 --served-model-name model");
+                frame.setImage(sglangImage);
+            }
+            default -> throw new ApiException(400, "不支持的推理框架: " + name);
         }
+        return frame;
     }
-
 }

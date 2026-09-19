@@ -12,17 +12,17 @@
                 <div class="layui-form-item layui-inline">
                     <label class="layui-form-label">服务名称</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="jobName" lay-verify="title" autocomplete="off" placeholder="请输入服务名称" class="layui-input">
+                        <input type="text" name="taskName" lay-verify="title" autocomplete="off" placeholder="请输入服务名称" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item layui-inline">
                     <label class="layui-form-label">推理框架</label>
                     <div class="layui-input-inline">
-<!--                        <input type="text" name="jobType" lay-verify="title" autocomplete="off" placeholder="请输入服务类型"-->
+<!--                        <input type="text" name="type" lay-verify="title" autocomplete="off" placeholder="请输入服务类型"-->
 <!--                               class="layui-input">-->
-                        <select name="jobType" lay-required>
+                        <select name="type" lay-required>
                             <option value=""></option>
-                            <option value="ollama">ollama</option>
+                            <option value="sglang">sglang</option>
                             <option value="vllm">vllm</option>
                             <!--                            <option value="mpijob">mpijob</option>-->
                         </select>
@@ -55,9 +55,9 @@
         </script>
 
         <script type="text/html" id="management-bar">
-            #[[ {{# if (d.status == "stopped") { }}
+            #[[ {{# if (d.desiredState != "deleted" && (d.status == "stopped" || d.status == "error" || d.status == "unknown")) { }}
             <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="run">运行</button>
-            {{# } else {  }}
+            {{# } else if (d.desiredState != "deleted") { }}
             <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="stop">停止</button>
             {{# } }}
             ]]#
@@ -80,9 +80,9 @@
     {{# } else if (d.status == "error") { }}
     <button class="pear-btn pear-btn-sm pear-btn-danger" >失败</button>
     {{# } else if (d.status == "pending") { }}
-    <button class="pear-btn pear-btn-sm pear-btn-warming" >调度</button>
+    <button class="pear-btn pear-btn-sm pear-btn-warming" >处理中</button>
     {{# } else {  }}
-    <button class="pear-btn pear-btn-sm pear-btn-warming" >调度</button>
+    <button class="pear-btn pear-btn-sm pear-btn-warming" >处理中</button>
     {{# } }}
     ]]#
 </script>
@@ -126,8 +126,8 @@
                     width: 100
                 },
                 {
-                    field: 'cmd',
-                    title: '执行命令'
+                    field: 'lastError', templet: function(d){ return $('<div>').text(d.lastError || '').html(); },
+                    title: '状态说明'
                 },
                 {
                     field: 'createTime',
@@ -185,7 +185,7 @@
         });
 
         form.on('submit(management-query)', function (data) {
-            window.refresh(data.field);
+            table.reload('management-table', {where:data.field, page:{curr:1}});
             return false;
         });
 
@@ -194,7 +194,7 @@
                 type: 2,
                 title: '新增服务',
                 shade: 0.1,
-                area: ['550px','400px'],
+                area: ['700px','650px'],
                 content: '/serve/add'
             });
         }
@@ -253,24 +253,9 @@
             });
         }
 
-        window.detail = function (obj) {
-            let loading = layer.load();
-            $.ajax({
-                url: prefix + 'tensorBoard',
-                data: JSON.stringify({
-                    taskId: obj.data['taskId']
-                }),
-                dataType: 'json',
-                contentType: 'application/json',
-                type: 'post',
-                success: function (result) {
-                    layer.close(loading);
-                    if (result.code == 200) {
-                        window.open(result.message);
-                    } else {
-                        layer.msg(result.message, {icon: 2, time: 2000});
-                    }
-                }
+        window.detail = function(obj) {
+            $.getJSON(prefix+'get',{taskId:obj.data.taskId}).done(function(res) {
+                layer.open({title:'服务详情',area:['650px','450px'],content:$('<pre>').css('white-space','pre-wrap').text(JSON.stringify(res.data,null,2)).prop('outerHTML')});
             });
         }
 
@@ -290,7 +275,7 @@
                         layer.close(loading);
                         if (result.code == 200) {
                             layer.msg(result.message, {icon: 1, time: 1000}, function () {
-                                obj.del();
+                                window.refresh();
                             });
                         } else {
                             layer.msg(result.message, {icon: 2, time: 1000});
@@ -300,6 +285,8 @@
             });
         }
 
+        const timer = setInterval(function(){ table.reload('management-table'); }, 10000);
+        window.addEventListener('beforeunload', function(){ clearInterval(timer); });
         window.refresh = function (param) {
             table.reload('management-table', {where: param});
         }

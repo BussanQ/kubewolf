@@ -33,3 +33,4 @@ build/
 .vscode/
 *.rpm
 *.deb
+.DS_Store

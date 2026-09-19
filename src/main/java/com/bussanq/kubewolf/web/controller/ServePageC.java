@@ -35,11 +35,6 @@ public class ServePageC {
 
     @GetMapping("/edit")
     public String edit(String taskId, ModelMap mmap) {
-        ServeTask serveTask = serveService.findById(taskId);
-        if (serveService.findById(taskId) == null) {
-            return "error/500";
-        }
-        mmap.put("serveTask", serveTask);
         return prefix + "/edit";
     }
     
