@@ -133,7 +133,7 @@ flowchart LR
 
 目前仓库还不能独立复现完整运行环境：
 
-1. 没有找到 `model_tpl`、`serve_task` 的建表或数据库迁移脚本。
+1. 已补充 [res/bqinfra.sql](../res/bqinfra.sql)，包含 `model_tpl`、`serve_task` 的建表语句，字段与当前生成模型一致。脚本不包含创建数据库或选择数据库的语句，需先创建并指定 `bqinfra`；目前仍未提供增量迁移机制。
 2. 默认 kubeconfig 指向 Windows 本地路径；读取失败只记录日志，后续初始化监听器仍会访问空客户端。
 3. Kubernetes 模板默认使用 `default` 命名空间，监听器使用配置中的命名空间，修改配置后可能出现部署与监听不一致。
 4. 应用默认连接 `gateway-one:3000`，部署清单创建的是 `aiproxy` Service，需要统一配置并验证接口兼容性。
@@ -145,12 +145,29 @@ flowchart LR
 - [application.yaml](../src/main/resources/application.yaml)
 - [K8sService.java](../src/main/java/com/bussanq/kubewolf/common/k8s/lib/K8sService.java)
 - [数据库映射](../src/main/java/com/bussanq/kubewolf/api/model/dto/_MappingKit.java)
+- [数据库初始化脚本](../res/bqinfra.sql)
+- [Java 模型生成器](../src/main/java/com/bussanq/kubewolf/common/db/_JFinalGenerator.java)
 - [安装脚本](../scripts/install.sh)
 - [AI 代理部署清单](../sealosbuild/kubewolf/manifests/aiproxy.yaml)
 
+### 数据库初始化
+
+在项目根目录执行以下命令，为新环境创建数据库并导入表结构：
+
+```sh
+mysql -h 127.0.0.1 -u root -p -e 'CREATE DATABASE IF NOT EXISTS bqinfra CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;'
+mysql -h 127.0.0.1 -u root -p bqinfra < res/bqinfra.sql
+```
+
+脚本包含 `DROP TABLE IF EXISTS`，导入会删除并重建同名表，不应直接用于需要保留数据的现有数据库。脚本仅包含表结构，没有模型初始数据。
+
+`_JFinalGenerator.java` 在已有表结构的基础上生成 Java 模型和映射代码；初始化数据库后，表结构变化时再按需运行生成器。
+
+另外，`model_tpl.create_time` 定义了 `ON UPDATE CURRENT_TIMESTAMP`，更新记录时可能改变创建时间，建议确认是否符合预期。
+
 ## 建议实施顺序
 
-1. **打通基本流程**：补齐数据库初始化和本地配置，修复模型管理接口、框架选择、部署参数和模型名映射。
+1. **打通基本流程**：使用 `res/bqinfra.sql` 初始化新数据库并完成本地配置，修复模型管理接口、框架选择、部署参数和模型名映射。
 2. **保证生命周期完整**：处理部署失败、就绪状态、停止、资源删除和网关同步重试。
 3. **补齐访问控制与交付材料**：完成认证授权、应用部署清单及可复现的安装说明。认证授权应在对外开放管理入口前完成。
 4. **扩展平台能力**：接入真实监控数据，再逐步完成训练、存储、镜像及异构 GPU 管理。
@@ -164,6 +181,7 @@ flowchart LR
 ## 本次验证范围
 
 - 已阅读主要业务代码、页面、配置和部署模板，并核对关键调用链。
+- 补充核对了 `res/bqinfra.sql`：`model_tpl` 的 9 个字段和 `serve_task` 的 19 个字段与对应 BaseModel 映射一致；未实际执行 SQL 导入。
 - 当前终端未找到 Maven，`java -version` 提示没有可用 Java Runtime。
 - 未执行编译、测试或集群联调；运行结果及外部组件兼容性仍需在具备依赖的环境中验证。
 - 未提交 Git commit。
