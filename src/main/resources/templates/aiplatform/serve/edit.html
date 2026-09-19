@@ -1,23 +1,112 @@
-<!DOCTYPE html><html lang="zh"><head>#@header("修改服务")</head>
-<body class="pear-container"><form class="layui-form" lay-filter="editor" style="padding:20px">
-<input type="hidden" name="taskId">
-<label>服务名称</label><input class="layui-input" name="taskName" readonly>
-<label>类型</label><select name="type"><option value="run">自定义服务</option><option value="vllm">vLLM</option><option value="sglang">SGLang</option></select>
-<label>镜像</label><input class="layui-input" name="image" required lay-verify="required">
-<label>实例数量</label><input class="layui-input" type="number" name="replicas" min="1" max="100" required>
-<label>端口</label><input class="layui-input" type="number" name="port" min="1" max="65535" required>
-<label>CPU（毫核）</label><input class="layui-input" type="number" name="cpu" min="1" required>
-<label>内存（MiB）</label><input class="layui-input" type="number" name="mem" min="1" required>
-<label>GPU 数量</label><input class="layui-input" type="number" name="gpu" min="0" required>
-<label>GPU 资源名称</label><input class="layui-input" name="gpuResource">
-<label>模型 PVC</label><input class="layui-input" name="modelCode">
-<label>模型挂载路径</label><input class="layui-input" name="modelPath">
-<label>启动命令</label><textarea class="layui-textarea" name="cmd" maxlength="1000"></textarea>
-<label>环境变量</label><textarea class="layui-textarea" name="env" maxlength="1000"></textarea>
-<button class="layui-btn" style="margin-top:16px" lay-submit lay-filter="save">保存</button>
-</form>#@footer()<script>
+<!DOCTYPE html>
+<html lang="zh">
+#@header("修改服务")
+<body>
+<form class="layui-form" lay-filter="editor">
+    <input type="hidden" name="taskId">
+    <div class="mainBox">
+        <div class="main-container layui-row layui-col-space20">
+            <div class="layui-col-md6">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="taskName">服务名称</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" id="taskName" name="taskName" readonly>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="type">类型</label>
+                    <div class="layui-input-block">
+                        <select id="type" name="type"><option value="run">自定义服务</option><option value="vllm">vLLM</option><option value="sglang">SGLang</option></select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="image">镜像</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" id="image" name="image" required lay-verify="required" placeholder="请输入镜像地址">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="replicas">实例数量</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="number" id="replicas" name="replicas" min="1" max="100" required>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="port">端口</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="number" id="port" name="port" min="1" max="65535" required>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="modelCode">模型 PVC</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" id="modelCode" name="modelCode" placeholder="模型文件所在的 PVC 名称">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="modelPath">挂载路径</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" id="modelPath" name="modelPath" placeholder="例如 /model">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="cpu">CPU 毫核</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="number" id="cpu" name="cpu" min="1" required>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="mem">内存 MiB</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="number" id="mem" name="mem" min="1" required>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="gpu">GPU 数量</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="number" id="gpu" name="gpu" min="0" required>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="gpuResource">GPU 资源</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" id="gpuResource" name="gpuResource" placeholder="nvidia.com/gpu">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="cmd">启动命令</label>
+                    <div class="layui-input-block">
+                        <textarea class="layui-textarea" id="cmd" name="cmd" maxlength="1000" placeholder="请输入启动命令"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="env">环境变量</label>
+                    <div class="layui-input-block">
+                        <textarea class="layui-textarea" id="env" name="env" maxlength="1000" placeholder="NAME:value;NAME2:value"></textarea>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="layui-btn layui-btn-normal layui-btn-sm" lay-submit lay-filter="save">
+                <i class="layui-icon layui-icon-ok"></i> 保存
+            </button>
+            <button type="button" id="cancel" class="layui-btn layui-btn-primary layui-btn-sm">
+                <i class="layui-icon layui-icon-close"></i> 取消
+            </button>
+        </div>
+    </div>
+</form>
+#@footer()
+<script>
 layui.use(['form','jquery','layer'], function () {
 const form = layui.form, $ = layui.jquery, layer = layui.layer;
+$('#cancel').on('click', function () { parent.layer.close(parent.layer.getFrameIndex(window.name)); });
 const taskId=new URLSearchParams(location.search).get('taskId');
 $.getJSON('/api/v1/serve/get',{taskId:taskId}).done(function(res){form.val('editor',res.data);});
 form.on('submit(save)',function(data){
@@ -27,4 +116,6 @@ form.on('submit(save)',function(data){
     return false;
 });
 });
-</script></body></html>
+</script>
+</body>
+</html>

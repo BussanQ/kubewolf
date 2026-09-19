@@ -1,15 +1,67 @@
-<!DOCTYPE html><html lang="zh"><head>#@header("部署模型")</head>
-<body class="pear-container"><form class="layui-form" lay-filter="editor" style="padding:20px">
-<label>服务名称</label><input class="layui-input" name="taskName" required lay-verify="required" placeholder="小写字母、数字和连字符" maxlength="63">
-<label>搜索模型</label><div style="display:flex"><input id="model-search" class="layui-input" placeholder="输入模型名称"><button type="button" id="search-model" class="layui-btn">搜索</button></div>
-<label>模型</label><select name="modelId" id="model-select" lay-verify="required"></select>
-<label>推理框架</label><select name="type"><option value="vllm">vLLM</option><option value="sglang">SGLang</option></select>
-<label>实例数量</label><input class="layui-input" type="number" name="replicas" min="1" max="100" value="1" required>
-<p>模型需要已创建的 PVC 和可用 GPU。部署结果及失败原因可在服务列表查看。</p>
-<button class="layui-btn" style="margin-top:16px" lay-submit lay-filter="save">保存</button>
-</form>#@footer()<script>
+<!DOCTYPE html>
+<html lang="zh">
+#@header("部署模型")
+<body>
+<form class="layui-form" lay-filter="editor">
+
+    <div class="mainBox">
+        <div class="main-container layui-row layui-col-space20">
+            <div class="layui-col-xs12">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="taskName">服务名称</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" id="taskName" name="taskName" required lay-verify="required" placeholder="小写字母、数字和连字符" maxlength="63">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="model-search">搜索模型</label>
+                    <div class="layui-input-block">
+                        <div class="layui-row layui-col-space10">
+                            <div class="layui-col-xs9"><input id="model-search" class="layui-input" placeholder="输入模型名称"></div>
+                            <div class="layui-col-xs3"><button type="button" id="search-model" class="layui-btn layui-btn-normal layui-btn-fluid">搜索</button></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="model-select">模型</label>
+                    <div class="layui-input-block">
+                        <select id="model-select" name="modelId" lay-verify="required"></select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="type">推理框架</label>
+                    <div class="layui-input-block">
+                        <select id="type" name="type"><option value="vllm">vLLM</option><option value="sglang">SGLang</option></select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="replicas">实例数量</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="number" id="replicas" name="replicas" min="1" max="100" value="1" required>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-xs12">
+                <div class="layui-form-item"><div class="layui-input-block layui-word-aux">模型需要已创建的 PVC 和可用 GPU。部署结果及失败原因可在服务列表查看。</div></div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="layui-btn layui-btn-normal layui-btn-sm" lay-submit lay-filter="save">
+                <i class="layui-icon layui-icon-ok"></i> 保存
+            </button>
+            <button type="button" id="cancel" class="layui-btn layui-btn-primary layui-btn-sm">
+                <i class="layui-icon layui-icon-close"></i> 取消
+            </button>
+        </div>
+    </div>
+</form>
+#@footer()
+<script>
 layui.use(['form','jquery','layer'], function () {
 const form = layui.form, $ = layui.jquery, layer = layui.layer;
+$('#cancel').on('click', function () { parent.layer.close(parent.layer.getFrameIndex(window.name)); });
 const selected = new URLSearchParams(location.search).get('modelId');
 function addOption(model) { $('#model-select').append($('<option>').val(model.id).text(model.name)); }
 function loadModels() {
@@ -28,4 +80,6 @@ form.on('submit(save)',function(data){
     return false;
 });
 });
-</script></body></html>
+</script>
+</body>
+</html>

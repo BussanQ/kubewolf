@@ -1,16 +1,68 @@
-<!DOCTYPE html><html lang="zh"><head>#@header("模型配置")</head>
-<body class="pear-container"><form class="layui-form" lay-filter="editor" style="padding:20px">
-<input type="hidden" name="id">
-<label>模型名称</label><input class="layui-input" name="name" maxlength="255" required lay-verify="required">
-<label>PVC 名称</label><input class="layui-input" name="code" maxlength="63" required lay-verify="required" placeholder="模型文件所在的 PVC 名称">
-<label>容器挂载路径</label><input class="layui-input" name="modelPath" value="/model" readonly>
-<label>推理框架</label><select name="type"><option value="vllm">vLLM</option><option value="sglang">SGLang</option></select>
-<label>环境变量</label><textarea class="layui-textarea" name="env" maxlength="1000" placeholder="NAME:value;NAME2:value"></textarea>
-<label>备注</label><textarea class="layui-textarea" name="custom" maxlength="1000"></textarea>
-<button class="layui-btn" style="margin-top:16px" lay-submit lay-filter="save">保存</button>
-</form>#@footer()<script>
+<!DOCTYPE html>
+<html lang="zh">
+#@header("模型配置")
+<body>
+<form class="layui-form" lay-filter="editor">
+    <input type="hidden" name="id">
+    <div class="mainBox">
+        <div class="main-container layui-row layui-col-space20">
+            <div class="layui-col-xs12">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="name">模型名称</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" id="name" name="name" maxlength="255" required lay-verify="required" placeholder="请输入模型名称">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="code">PVC 名称</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" id="code" name="code" maxlength="63" required lay-verify="required" placeholder="模型文件所在的 PVC 名称">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="modelPath">挂载路径</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" id="modelPath" name="modelPath" value="/model" readonly>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="type">推理框架</label>
+                    <div class="layui-input-block">
+                        <select id="type" name="type"><option value="vllm">vLLM</option><option value="sglang">SGLang</option></select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="env">环境变量</label>
+                    <div class="layui-input-block">
+                        <textarea class="layui-textarea" id="env" name="env" maxlength="1000" placeholder="NAME:value;NAME2:value"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="custom">备注</label>
+                    <div class="layui-input-block">
+                        <textarea class="layui-textarea" id="custom" name="custom" maxlength="1000" placeholder="请输入模型备注"></textarea>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="layui-btn layui-btn-normal layui-btn-sm" lay-submit lay-filter="save">
+                <i class="layui-icon layui-icon-ok"></i> 保存
+            </button>
+            <button type="button" id="cancel" class="layui-btn layui-btn-primary layui-btn-sm">
+                <i class="layui-icon layui-icon-close"></i> 取消
+            </button>
+        </div>
+    </div>
+</form>
+#@footer()
+<script>
 layui.use(['form','jquery','layer'], function () {
 const form = layui.form, $ = layui.jquery, layer = layui.layer;
+$('#cancel').on('click', function () { parent.layer.close(parent.layer.getFrameIndex(window.name)); });
 const id = new URLSearchParams(location.search).get('id');
 if (id) $.getJSON('/api/v1/models/get', {id:id}).done(function(res) { form.val('editor',res.data); });
 form.on('submit(save)', function(data) {
@@ -19,4 +71,6 @@ form.on('submit(save)', function(data) {
     return false;
 });
 });
-</script></body></html>
+</script>
+</body>
+</html>

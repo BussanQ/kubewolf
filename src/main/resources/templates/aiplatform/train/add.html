@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="zh" >
-<head>
-    #@header("新增训练任务")
-</head>
+#@header("新增训练任务")
 <body>
-<form class="layui-form">
+<form class="layui-form" onsubmit="return false;">
     <div class="mainBox">
         <div class="main-container layui-row">
+            <blockquote class="layui-elem-quote" role="status">
+                训练功能尚未实现。当前页面仅供配置预览，暂不支持创建、保存或运行训练任务。
+            </blockquote>
             <div class="layui-col-md6">
                 <div class="layui-form-item">
                     <label class="layui-form-label">任务名称：</label>
@@ -91,14 +92,13 @@
     </div>
     <div class="bottom">
         <div class="button-container">
-            <button type="submit" class="layui-btn layui-btn-normal layui-btn-sm" lay-submit=""
-                    lay-filter="management-save">
+            <button type="button" class="layui-btn layui-btn-disabled layui-btn-sm" disabled title="训练功能尚未实现">
                 <i class="layui-icon layui-icon-ok"></i>
-                提交
+                提交（暂不可用）
             </button>
-            <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">
-                <i class="layui-icon layui-icon-refresh"></i>
-                重置
+            <button type="button" id="close-dialog" class="layui-btn layui-btn-primary layui-btn-sm">
+                <i class="layui-icon layui-icon-close"></i>
+                关闭
             </button>
         </div>
     </div>
@@ -106,28 +106,8 @@
 #@footer()
 <script>
     layui.use(['form', 'jquery'], function () {
-        let form = layui.form;
-        let $ = layui.jquery;
-        let prefix = "/api/v1/train/";
-        form.on('submit(management-save)', function (data) {
-            $.ajax({
-                url: prefix + 'create',
-                data: JSON.stringify(data.field),
-                dataType: 'json',
-                contentType: 'application/json',
-                type: 'post',
-                success: function (result) {
-                    if (result.code == 200) {
-                        layer.msg(result.message, {icon: 1, time: 1000}, function () {
-                            parent.layer.close(parent.layer.getFrameIndex(window.name));
-                            parent.layui.table.reload("management-table");
-                        });
-                    } else {
-                        layer.msg(result.message, {icon: 2, time: 1000});
-                    }
-                }
-            })
-            return false;
+        layui.jquery('#close-dialog').on('click', function () {
+            parent.layer.close(parent.layer.getFrameIndex(window.name));
         });
     });
 </script>
