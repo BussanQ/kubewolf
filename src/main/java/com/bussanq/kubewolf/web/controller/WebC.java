@@ -1,7 +1,6 @@
 package com.bussanq.kubewolf.web.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
@@ -22,15 +21,7 @@ public class WebC {
     }
 
     @GetMapping("/console")
-    public String console(ModelMap mmap) {
-        mmap.put("imageCount", "10");
-        mmap.put("nodes", "5");
-        mmap.put("cpu", "32");
-        mmap.put("memoryUsed", "64");
-        mmap.put("memory", "128");
-        mmap.put("cpuRate", "0.2");
-        mmap.put("gpuRate", "1");
-        mmap.put("memRate", "0.5");
+    public String console() {
         return "aiplatform/web/console";
     }
 }

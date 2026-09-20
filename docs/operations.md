@@ -50,3 +50,16 @@ mvn -Dtest=TaskValidationTest,FrameWorkServiceTest,ServingResourcesTest,TaskReco
 只运行受影响模块测试。真实推理还需要 GPU、模型 PVC 和网关；本地 CPU 容器联调不等同于 vLLM/SGLang 推理验证。
 
 数据库配置变更可单独运行 `DatabaseLifecycleTest`：先准备可丢弃的空 MySQL 数据库，再设置 `KUBEWOLF_TEST_DB_URL`、`KUBEWOLF_TEST_DB_USERNAME`、`KUBEWOLF_TEST_DB_PASSWORD`，执行 `mvn -Dtest=DatabaseLifecycleTest test`。测试验证实际迁移、ActiveRecord 读写、连接池配置和关闭；未设置测试数据库 URL 时跳过。
+
+
+## 主页真实数据
+
+`/console` 保留原有统计卡和图表，在页面加载时请求只读接口 `GET /api/v1/console`；沿用现有登录及只读角色权限。页面没有新增按钮、统计项或定时刷新功能。
+
+- `imageCount`：已登记模型总数，与模型管理列表一致，不用 Pod 数量或副本数量替代。
+- `nodes`、`cpu`、`memory`：集群 Node 数、`status.capacity` 的 CPU 总核数和内存总量（GiB）。
+- `cpuRate`、`memRate`、`memoryUsed`：优先读取 Metrics API 的节点用量；不可用或节点数据缺失时，经 API Server 的 `nodes/{name}/proxy/stats/summary` 读取 `usageNanoCores` 和 `workingSetBytes`。利用率为集群总用量除以总容量，不平均各节点百分比。
+- 超过 5 分钟的采样不参与计算；任一节点缺少某项用量，该项集群用量/比例标记为未知，其他可用指标仍返回。真实的零值正常展示。
+- 当前集群没有 GPU 利用率监控源，`gpuRate` 为未知，原图表位置显示“数据异常”；不以 GPU 资源请求数或已分配数量冒充 GPU 利用率。标准 Metrics API 仅包含 CPU 和内存，见 [Kubernetes 资源指标文档](https://kubernetes.io/docs/tasks/debug/debug-cluster/resource-metrics-pipeline/)。
+
+集群查询使用现有 Kubernetes 客户端与认证配置：需要 `nodes` 的 `list` 权限；Metrics API 需要 `metrics.k8s.io` 中 `nodes` 的 `list` 权限；节点统计回退需要 `nodes/proxy` 的 `get` 权限。不会自动安装监控组件或修改集群权限。接口无法获取的字段为空或省略，页面用 `--` / 原“数据异常”提示展示。

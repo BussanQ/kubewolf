@@ -13,6 +13,10 @@ import java.util.*;
 @Service
 @DependsOn("activeRecordPlugin")
 public class ModelService {
+    public long count() {
+        return Db.queryLong("select count(*) from model_tpl");
+    }
+
     public ModelTpl findById(String id) {
         ModelTpl model = ModelTpl.dao.findById(id);
         if (model == null) throw new ApiException(404, "未找到模型");

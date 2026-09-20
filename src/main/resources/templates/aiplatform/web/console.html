@@ -116,14 +116,14 @@
     <div id="consoleLink" class="layui-row layui-col-space15">
         <div class="layui-col-lg3 layui-col-md4 layui-col-sm4 layui-col-xs6">
             <div class="console-link-block" ew-title="系统版本">
-                <div class="console-link-block-num">#(imageCount)</div>
+                <div class="console-link-block-num" id="imageCount">--</div>
                 <div class="console-link-block-text">模型数量</div>
                 <img class="console-link-block-icon" src="/admin/images/k8s.png">
             </div>
         </div>
         <div class="layui-col-lg3 layui-col-md4 layui-col-sm4 layui-col-xs6">
             <div class="console-link-block" ew-title="节点数">
-                <div class="console-link-block-num">#(nodes)</div>
+                <div class="console-link-block-num" id="nodes">--</div>
                 <div class="console-link-block-text">节点数</div>
                 <img class="console-link-block-icon" src="/admin/images/node.png">
             </div>
@@ -131,14 +131,14 @@
         <div class="layui-col-lg3 layui-col-md4 layui-col-sm4 layui-col-xs6">
             <div class="console-link-block" ew-title="CPU核数">
                 <img class="console-link-block-icon" src="/admin/images/cpu.png">
-                <div class="console-link-block-num">#(cpu)</div>
+                <div class="console-link-block-num" id="cpu">--</div>
                 <div class="console-link-block-text">CPU核数</div>
             </div>
         </div>
         <div class="layui-col-lg3 layui-col-md4 layui-col-sm4 layui-col-xs6">
             <div class="console-link-block" ew-title="内存">
                 <img class="console-link-block-icon" src="/admin/images/mem.png">
-                <div class="console-link-block-num">#if (memory) #(memory)GiB #end</div>
+                <div class="console-link-block-num" id="memory">--</div>
                 <div class="console-link-block-text">内存</div>
             </div>
         </div>
@@ -148,8 +148,8 @@
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md4 layui-col-xs12">
             <div class="layui-card">
-                <div class="layui-card-header">CPU利用率 <span style="color:#55A5EA;font-size: 16px;font-weight:bold;">
-                    &nbsp;&nbsp;#if(cpuRate) #else 数据异常 #end</span></div>
+                <div class="layui-card-header">CPU利用率 <span id="cpu-status" style="color:#55A5EA;font-size: 16px;font-weight:bold;">
+                    &nbsp;&nbsp;数据异常</span></div>
                 <div class="layui-card-body">
                     <div id="tjDivDay" style="height: 373px;"></div>
                 </div>
@@ -157,8 +157,8 @@
         </div>
         <div class="layui-col-md4 layui-col-xs12">
             <div class="layui-card">
-                <div class="layui-card-header">内存<span style="color:#55A5EA;font-size: 16px;font-weight:bold;">
-                    &nbsp;&nbsp;#if(memoryUsed) #(memoryUsed) / #(memory) #else 数据异常 #end</span></div>
+                <div class="layui-card-header">内存<span id="memory-status" style="color:#55A5EA;font-size: 16px;font-weight:bold;">
+                    &nbsp;&nbsp;数据异常</span></div>
                 <div class="layui-card-body">
                     <div id="tjDivWeek" style="height: 373px;"></div>
                 </div>
@@ -166,8 +166,8 @@
         </div>
         <div class="layui-col-md4 layui-col-xs12">
             <div class="layui-card">
-                <div class="layui-card-header">GPU利用率<span style="color:#55A5EA;font-size: 16px;font-weight:bold;">
-                    &nbsp;&nbsp;#if(gpuRate) #else 数据异常 #end</span></div>
+                <div class="layui-card-header">GPU利用率<span id="gpu-status" style="color:#55A5EA;font-size: 16px;font-weight:bold;">
+                    &nbsp;&nbsp;数据异常</span></div>
                 <div class="layui-card-body">
                     <div id="tjDivMonth" style="height: 373px;"></div>
                 </div>
@@ -185,103 +185,62 @@
 <script src="/component/echarts/echartsTheme.js"></script>
 #@footer()
 <script>
-    layui.use(['layer'], function () {
+    layui.use(['layer', 'jquery'], function () {
         var $ = layui.jquery;
-        var layer = layui.layer;
-
-
-
-        // 渲染cpu利用率
         var myCharts1 = echarts.init(document.getElementById('tjDivDay'));
-        var cpuRate = "#(cpuRate)";
-        if (cpuRate) {
-            var options1 = {
-                series: [{
-                    type: 'liquidFill',
-                    radius: '80%',
-                    data: [cpuRate, cpuRate, cpuRate, cpuRate],
-                    label: {
-                        formatter: function(param) {
-                            return (param.value*100).toFixed(2)
-                                +  '%';
-                        }
-                    },
-                    backgroundStyle: {
-                        borderWidth: 5,
-                        borderColor: '#55A5EA'
-                    },
-                    outline: {
-                        show: false
-                    }
-                }]
-            };
-            myCharts1.setOption(options1);
-        }
-
-        // ------------------------------------------------------------------------
-        // 渲染内存图表
         var myCharts2 = echarts.init(document.getElementById('tjDivWeek'), myEchartsTheme);
-        var memRate = "#(memRate)";
-        if (memRate) {
-            var options2 = {
-                series: [{
-                    type: 'liquidFill',
-                    radius: '80%',
-                    data: [memRate, memRate, memRate, memRate],
-                    backgroundStyle: {
-                        borderWidth: 5,
-                        borderColor: '#55A5EA'
-                    },
-                    outline: {
-                        show: false
-                    }
-                }]
-            };
-            myCharts2.setOption(options2);
-        }
-
-        // -------------------------------------------------------------------------
-        // 渲染gpu利用率
         var myCharts3 = echarts.init(document.getElementById('tjDivMonth'), myEchartsTheme);
-        var gpuRate = "#(gpuRate)";
-        if (gpuRate) {
-            var options3 = {
+
+        function available(value) {
+            return typeof value === 'number' && Number.isFinite(value) && value >= 0;
+        }
+
+        function format(value) {
+            return available(value) ? Number(value.toFixed(2)).toString() : '--';
+        }
+
+        function renderChart(chart, rate) {
+            chart.clear();
+            if (!available(rate)) return;
+            chart.setOption({
                 series: [{
                     type: 'liquidFill',
                     radius: '80%',
-                    data: [gpuRate, gpuRate, gpuRate, gpuRate],
-                    backgroundStyle: {
-                        borderWidth: 5,
-                        borderColor: '#55A5EA'
+                    data: [rate, rate, rate, rate],
+                    label: {
+                        formatter: function () { return (rate * 100).toFixed(2) + '%'; }
                     },
-                    outline: {
-                        show: false
-                    }
+                    backgroundStyle: {borderWidth: 5, borderColor: '#55A5EA'},
+                    outline: {show: false}
                 }]
-            };
-            myCharts3.setOption(options3);
+            });
         }
 
-        // 考虑页面刷新数据问题
-        // setInterval(function(){
-        //     $.get('/metrics',function (res) {
-        //         var cpuRate = res.cpuRate;
-        //         myCharts1.setOption({series:[{data: [cpuRate, cpuRate, cpuRate, cpuRate]}]});
-        //         var memRate = res.memRate;
-        //         myCharts2.setOption({series:[{data: [memRate, memRate, memRate, memRate]}]});
-        //         var gpuRate = res.gpuRate ;
-        //         myCharts3.setOption({series:[{data: [gpuRate, gpuRate, gpuRate, gpuRate]}]});
-        //     }, 'json');
-        // }, 10000);
-        // -------------------------------------------------------------------------
+        function render(data) {
+            $('#imageCount').text(format(data.imageCount));
+            $('#nodes').text(format(data.nodes));
+            $('#cpu').text(format(data.cpu));
+            $('#memory').text(available(data.memory) ? format(data.memory) + 'GiB' : '--');
+            $('#cpu-status').text(available(data.cpuRate) ? '' : '数据异常');
+            $('#memory-status').text(available(data.memoryUsed) && available(data.memory)
+                ? '\u00a0\u00a0' + format(data.memoryUsed) + ' / ' + format(data.memory) : '\u00a0\u00a0数据异常');
+            $('#gpu-status').text(available(data.gpuRate) ? '' : '数据异常');
+            renderChart(myCharts1, data.cpuRate);
+            renderChart(myCharts2, data.memRate);
+            renderChart(myCharts3, data.gpuRate);
+        }
 
-        // 窗口大小改变事件
+        $.getJSON('/api/v1/console').done(function (res) {
+            render(res.code === 200 && res.data ? res.data : {});
+        }).fail(function () {
+            render({});
+        });
+
         window.onresize = function () {
             myCharts1.resize();
             myCharts2.resize();
             myCharts3.resize();
         };
-
     });
 </script>
 </body>
