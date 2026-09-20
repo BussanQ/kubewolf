@@ -106,9 +106,19 @@
                     width: 120
                 },
                 {
-                    field: 'code', templet: function(d){ return $('<div>').text(d.code || '').html(); },
-                    title: 'PVC',
+                    field: 'version', templet: function(d){ return $('<div>').text(d.version || '').html(); },
+                    title: '版本',
                     width: 100
+                },
+                {
+                    field: 'image', templet: function(d){ return $('<div>').text(d.image || '').html(); },
+                    title: '默认镜像',
+                    width: 150
+                },
+                {
+                    field: 'cmd', templet: function(d){ return $('<div>').text(d.cmd || '').html(); },
+                    title: '启动命令',
+                    width: 150
                 },
                 {
                     field: 'createTime',
@@ -171,7 +181,7 @@
                 type: 2,
                 title: '新增模型',
                 shade: 0.1,
-                area: ['700px', '500px'],
+                area: ['700px', '650px'],
                 content: '/model/add'
             });
         }
@@ -181,14 +191,14 @@
                 type: 2,
                 title: '修改模型',
                 shade: 0.1,
-                area: ['550px','450px'],
+                area: ['700px','650px'],
                 content: '/model/edit?id=' + encodeURIComponent(obj.data['id'])
             });
         }
 
         window.run = function (obj) {
             // 跳转到服务页面，并传递模型ID参数
-            layer.open({type:2,title:'部署模型',area:['700px','650px'],content:'/serve/add?modelId='+encodeURIComponent(obj.data.id)});
+            window.location.href = '/serve/main?modelId=' + encodeURIComponent(obj.data.id);
         }
 
         window.remove = function (obj) {

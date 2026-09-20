@@ -25,6 +25,10 @@ class ServingResourcesTest {
         assertNotNull(container.getStartupProbe());
         assertEquals("x\nkind: Service",container.getEnv().getFirst().getValue());
         assertEquals("model-pvc",deployment.getSpec().getTemplate().getSpec().getVolumes().getFirst().getPersistentVolumeClaim().getClaimName());
+        var toleration = deployment.getSpec().getTemplate().getSpec().getTolerations().getFirst();
+        assertEquals("bussanq.com/run", toleration.getKey());
+        assertEquals("Exists", toleration.getOperator());
+        assertEquals("NoSchedule", toleration.getEffect());
         assertEquals("test-ns",builder.service(task).getMetadata().getNamespace());
     }
 }

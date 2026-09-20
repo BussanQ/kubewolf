@@ -8,5 +8,9 @@ import com.bussanq.kubewolf.api.model.base.BaseModelTpl;
 @SuppressWarnings("serial")
 public class ModelTpl extends BaseModelTpl<ModelTpl> {
 	public static final ModelTpl dao = new ModelTpl().dao();
+    public String getVersion() { return getStr("version"); }
+    public String getDescription() { return getStr("description"); }
+    public String getImage() { return getStr("image"); }
+    public String getCmd() { return getStr("cmd"); }
 }
 

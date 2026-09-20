@@ -126,6 +126,10 @@
                     width: 100
                 },
                 {
+                    field: 'cmd', templet: function(d){ return $('<div>').text(d.cmd || '').html(); },
+                    title: '执行命令'
+                },
+                {
                     field: 'lastError', templet: function(d){ return $('<div>').text(d.lastError || '').html(); },
                     title: '状态说明'
                 },
@@ -189,13 +193,14 @@
             return false;
         });
 
+        let selectedModel = new URLSearchParams(location.search).get('modelId');
         window.add = function () {
             layer.open({
                 type: 2,
                 title: '新增服务',
                 shade: 0.1,
                 area: ['700px','650px'],
-                content: '/serve/add'
+                content: '/serve/add' + (selectedModel ? '?modelId=' + encodeURIComponent(selectedModel) : '')
             });
         }
 
@@ -285,6 +290,11 @@
             });
         }
 
+        if (selectedModel) {
+            window.add();
+            selectedModel = null;
+            history.replaceState(null, '', location.pathname);
+        }
         const timer = setInterval(function(){ table.reload('management-table'); }, 10000);
         window.addEventListener('beforeunload', function(){ clearInterval(timer); });
         window.refresh = function (param) {

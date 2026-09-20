@@ -60,16 +60,20 @@ public class ServeService {
         return result[0];
     }
     public ServeTask startModel(DeployModelRequest request) {
-        var frame = frameworks.getFrame(request.getType());
         ServeTask[] result = new ServeTask[1];
         Db.tx(() -> {
             ModelTpl model = ModelTpl.dao.findFirst("select * from model_tpl where id=? for update", request.getModelId());
             if (model == null) throw new ApiException(404, "未找到模型");
+            var frame = frameworks.getFrame(request.getType(), model.getModelPath());
             TaskValidation.modelVolume(model.getModelPath(), model.getCode());
+            if (Objects.equals(model.getType(), request.getType())) {
+                if (model.getImage() != null && !model.getImage().isBlank()) frame.setImage(model.getImage());
+                if (model.getCmd() != null && !model.getCmd().isBlank()) frame.setCmd(model.getCmd());
+            }
             TaskValidation.environment(model.getEnv());
             ServeTask task = new ServeTask().setTaskName(request.getTaskName()).setType(request.getType())
                     .setImage(frame.getImage()).setCmd(frame.getCmd()).setPort(frame.getPort()).setReplicas(request.getReplicas())
-                    .setModelCode(model.getCode()).setModelPath("/model").setEnv(model.getEnv()).setCpu(1000).setMem(16000).setGpu(1);
+                    .setModelCode(model.getCode()).setModelPath(model.getModelPath()).setEnv(model.getEnv()).setCpu(1000).setMem(16000).setGpu(1);
             task.set("model_id", model.getId());
             initialize(task, "running");
             repository.insert(task);

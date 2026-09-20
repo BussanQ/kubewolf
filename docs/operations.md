@@ -24,7 +24,7 @@ SERVER_ADDRESS=0.0.0.0 ./scripts/run-local.sh
 ## 现有数据库升级
 
 1. 停止旧版本写入并备份数据库。检查重复服务名：`SELECT task_name, COUNT(*) FROM serve_task GROUP BY task_name HAVING COUNT(*) > 1;`。先人工处理重复记录，避免唯一约束迁移失败。
-2. 启动新版本。Flyway 对无历史记录的旧库以版本 0 建立基线，再执行 V1、V2；V1 使用 `CREATE TABLE IF NOT EXISTS`，V2 增量添加生命周期字段、唯一约束、索引及模型外键，并修正创建时间自动更新问题。
+2. 启动新版本。Flyway 对无历史记录的旧库以版本 0 建立基线，再执行 V1、V2、V3；V1 使用 `CREATE TABLE IF NOT EXISTS`，V2 增量添加生命周期字段、唯一约束、索引及模型外键，并修正创建时间自动更新问题；V3 增量添加模型版本、描述、默认镜像和启动命令字段。
 3. 检查 `flyway_schema_history` 和健康接口。MySQL DDL 不支持整体事务回滚；迁移失败应核对已执行语句并从备份恢复或人工修复后再启动，不能盲目重跑原始建表脚本。
 
 旧任务初始状态为 `unmanaged/unknown`，不会自动修改集群；显式启动、停止、删除后才接管。升级前应核对原命名空间、资源名称、所有权标签及旧网关渠道，保存渠道 ID 到 `gateway_channel_id` 并设置 `gateway_registered=1`。缺少归属标签或网关名称不匹配时，应用保留记录并报错，须先人工核实归属，避免操作无关资源。不要在仍有任务时直接切换 `K8S_NAMESPACE`。
@@ -33,7 +33,7 @@ SERVER_ADDRESS=0.0.0.0 ./scripts/run-local.sh
 
 ## 部署、停止与删除
 
-模型 `code` 是目标命名空间中已有 PVC 的名称，推理框架读取挂载目录 `/model`。支持 vLLM、SGLang，镜像可通过 `VLLM_IMAGE`、`SGLANG_IMAGE` 设置；模型部署默认每副本 1 GPU、1000m CPU、16000Mi 内存。服务编辑/API 可调整资源，GPU 扩展资源名称默认 `nvidia.com/gpu`。
+模型版本 `version`、描述 `description` 与 PVC 配置独立保存。模型登记时可不填写 `code`；部署时 `code` 必须是目标命名空间中已有 PVC 的名称，`modelPath` 必须为容器内绝对路径（默认 `/model`），框架命令使用同一路径。模型的默认镜像和启动命令为空时采用框架默认值；指定值仅在部署框架与模型配置一致时生效，切换框架使用所选框架的默认值。支持 vLLM、SGLang，镜像可通过 `VLLM_IMAGE`、`SGLANG_IMAGE` 设置；模型部署默认每副本 1 GPU、1000m CPU、16000Mi 内存。服务编辑/API 可调整资源，GPU 扩展资源名称默认 `nvidia.com/gpu`。
 
 写接口返回“已受理”，不表示模型已就绪。任务保存 `desiredState`、`actualStatus`、`lastError`、重试次数及渠道 ID；后台批量调谐，错误按 5 秒至 300 秒退避重试。页面显示异步状态。启动探针允许模型加载，推理就绪后才注册网关。
 

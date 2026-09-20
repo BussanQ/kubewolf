@@ -43,7 +43,9 @@ public class ServingResources {
                 .withNewSpec().withReplicas(task.getReplicas()).withProgressDeadlineSeconds(3600)
                 .withNewSelector().withMatchLabels(Map.of(TASK_ID, task.getTaskId())).endSelector()
                 .withNewTemplate().withNewMetadata().withLabels(labels).endMetadata()
-                .withNewSpec().withContainers(container.build()).withVolumes(volumes).endSpec().endTemplate()
+                .withNewSpec().withContainers(container.build()).withVolumes(volumes)
+                .addNewToleration().withKey("bussanq.com/run").withOperator("Exists").withEffect("NoSchedule").endToleration()
+                .endSpec().endTemplate()
                 .endSpec().build();
     }
 

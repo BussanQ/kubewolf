@@ -34,7 +34,7 @@ class DatabaseLifecycleTest {
                     pool.set(dataSource);
                     assertThat(context.getBean(HikariCpPlugin.class).getDataSource()).isSameAs(dataSource);
                     assertThat(context.getBean(Flyway.class).getConfiguration().getDataSource()).isSameAs(dataSource);
-                    assertThat(context.getBean(Flyway.class).info().current().getVersion().getVersion()).isEqualTo("2");
+                    assertThat(context.getBean(Flyway.class).info().current().getVersion().getVersion()).isEqualTo("3");
                     assertThat(dataSource.getMinimumIdle()).isEqualTo(1);
                     assertThat(dataSource.getMaximumPoolSize()).isEqualTo(3);
                     ModelTpl model = new ModelTpl().setId("jdbc-removal-check").setName("数据库模块验证")

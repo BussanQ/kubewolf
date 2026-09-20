@@ -14,21 +14,45 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label" for="code">PVC 名称</label>
+                    <label class="layui-form-label" for="modelPath">模型地址</label>
                     <div class="layui-input-block">
-                        <input class="layui-input" id="code" name="code" maxlength="63" required lay-verify="required" placeholder="模型文件所在的 PVC 名称">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label" for="modelPath">挂载路径</label>
-                    <div class="layui-input-block">
-                        <input class="layui-input" id="modelPath" name="modelPath" value="/model" readonly>
+                        <input class="layui-input" id="modelPath" name="modelPath" value="/model" maxlength="255" required lay-verify="required" placeholder="模型路径；PVC 部署时为容器内绝对路径">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" for="type">推理框架</label>
                     <div class="layui-input-block">
                         <select id="type" name="type"><option value="vllm">vLLM</option><option value="sglang">SGLang</option></select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="version">版本号</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" id="version" name="version" maxlength="64" placeholder="请输入版本号">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="description">描述</label>
+                    <div class="layui-input-block">
+                        <textarea class="layui-textarea" id="description" name="description" maxlength="1000" placeholder="请输入描述"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="image">默认镜像</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" id="image" name="image" maxlength="255" placeholder="留空使用推理框架默认镜像">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="cmd">启动命令</label>
+                    <div class="layui-input-block">
+                        <textarea class="layui-textarea" id="cmd" name="cmd" maxlength="1000" placeholder="留空使用推理框架默认命令"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="code">PVC 名称</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" id="code" name="code" maxlength="63" placeholder="部署时填写模型文件所在的 PVC 名称">
                     </div>
                 </div>
                 <div class="layui-form-item">

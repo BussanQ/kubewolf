@@ -59,6 +59,8 @@ public class ModelService {
     private ModelTpl fill(ModelTpl model, ModelRequest request) {
         TaskValidation.environment(request.getEnv());
         return model.setName(request.getName().trim()).setCode(request.getCode()).setModelPath(request.getModelPath())
-                .setType(request.getType()).setEnv(request.getEnv()).setCustom(request.getCustom());
+                .setType(request.getType()).setEnv(request.getEnv()).setCustom(request.getCustom())
+                .set("version", request.getVersion()).set("description", request.getDescription())
+                .set("image", request.getImage()).set("cmd", request.getCmd());
     }
 }
