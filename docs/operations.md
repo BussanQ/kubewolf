@@ -54,7 +54,7 @@ mvn -Dtest=TaskValidationTest,FrameWorkServiceTest,ServingResourcesTest,TaskReco
 
 ## 主页真实数据
 
-`/console` 保留原有统计卡和图表，在页面加载时请求只读接口 `GET /api/v1/console`；沿用现有登录及只读角色权限。页面没有新增按钮、统计项或定时刷新功能。
+`/console` 保留原有统计项，顶部模型数量、节点数、CPU 核数和内存使用浅色概览卡及数字渐入展示，CPU、内存和 GPU 利用率使用同风格发光环形仪表展示，在页面加载时请求只读接口 `GET /api/v1/console`；沿用现有登录及只读角色权限。页面没有新增按钮或定时刷新功能。仪表下方展示同一采样推导出的已用/总量；数字渐入和环形扫描仅为视觉动效，不代表历史趋势或持续采样。后台标签页暂停动画，并遵循系统“减少动态效果”设置。
 
 - `imageCount`：已登记模型总数，与模型管理列表一致，不用 Pod 数量或副本数量替代。
 - `nodes`、`cpu`、`memory`：集群 Node 数、`status.capacity` 的 CPU 总核数和内存总量（GiB）。

@@ -5,174 +5,142 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     #@header("AI算法")
-    <style>
-        .layui-fluid {
-            position: relative;
-            margin: 0 auto;
-            padding: 15px;
-        }
-        /** 统计快捷方式样式 */
-        .console-link-block {
-            display: block;
-            position: relative;
-            color: #fff;
-            font-size: 18px;
-            padding: 25px 20px;
-            border-radius: 4px;
-            overflow: hidden;
-            box-shadow: 0px 3px 5px rgba(0, 0, 0, .1);
-            background-color: rgb(155, 197, 57);
-        }
+    <link rel="stylesheet" href="/css/console-metrics.css">
 
-        .console-link-block .console-link-block-num {
-            font-size: 40px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .console-link-block .console-link-block-icon {
-            height: 70px;
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .console-link-block .console-link-block-band {
-            background-color: rgb(227, 42, 22);
-            font-size: 14px;
-            position: absolute;
-            width: 80px;
-            padding: 2px 0;
-            text-align: center;
-            transform: rotate(45deg);
-            right: -21px;
-            top: 8px;
-            color: rgba(255, 255, 255, .9);
-            z-index: 1;
-        }
-
-        /** //统计快捷方式样式end */
-
-        /** 小屏幕下样式 */
-        @media screen and (max-width: 992px) {
-            .console-link-block {
-                font-size: 14px;
-                padding: 15px 10px;
-            }
-
-            .console-link-block .console-link-block-num {
-                font-size: 28px;
-                margin-bottom: 0px;
-            }
-
-            .console-link-block .console-link-block-icon {
-                height: 45px;
-                right: 10px;
-            }
-
-            .console-link-block .console-link-block-band {
-                font-size: 12px;
-                right: -25px;
-                top: 8px;
-            }
-
-        }
-
-        /** 设置每个快捷块的颜色 */
-        #consoleLink > div:first-child .console-link-block {
-            background-color: rgb(155, 197, 57);
-        }
-
-        #consoleLink > div:nth-child(2) .console-link-block {
-            background-color: rgb(85, 165, 234);
-        }
-
-        #consoleLink > div:nth-child(3) .console-link-block {
-            background-color: rgb(157, 175, 291);
-        }
-
-        #consoleLink > div:nth-child(4) .console-link-block {
-            background-color: rgb(245, 145, 162);
-        }
-
-        #consoleLink > div:nth-child(5) .console-link-block {
-            background-color: rgb(254, 170, 79);
-        }
-
-        #consoleLink > div:last-child .console-link-block {
-            background-color: rgb(64, 212, 176);
-        }
-
-        /** //设置每个快捷块的颜色end */
-    </style>
 </head>
 
 <body>
 
 <!-- 正文开始 -->
-<div class="layui-fluid">
-    <!-- 快捷方式 -->
-    <div id="consoleLink" class="layui-row layui-col-space15">
-        <div class="layui-col-lg3 layui-col-md4 layui-col-sm4 layui-col-xs6">
-            <div class="console-link-block" ew-title="系统版本">
-                <div class="console-link-block-num" id="imageCount">--</div>
-                <div class="console-link-block-text">模型数量</div>
-                <img class="console-link-block-icon" src="/admin/images/k8s.png">
+<div class="layui-fluid console-dashboard">
+    <!-- 集群概览 -->
+    <div id="consoleLink" class="summary-grid">
+        <section class="summary-card summary-card--imageCount is-loading" id="imageCount-summary" aria-labelledby="imageCount-summary-title">
+            <div class="summary-heading">
+                <div><div class="summary-eyebrow">MODELS</div><h2 id="imageCount-summary-title">模型数量</h2></div>
+                <span class="summary-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg></span>
             </div>
-        </div>
-        <div class="layui-col-lg3 layui-col-md4 layui-col-sm4 layui-col-xs6">
-            <div class="console-link-block" ew-title="节点数">
-                <div class="console-link-block-num" id="nodes">--</div>
-                <div class="console-link-block-text">节点数</div>
-                <img class="console-link-block-icon" src="/admin/images/node.png">
+            <div class="summary-value"><strong id="imageCount">--</strong><span>个</span></div>
+            <div class="summary-footer"><span>已登记模型</span><span class="summary-state">查询中</span></div>
+        </section>
+        <section class="summary-card summary-card--nodes is-loading" id="nodes-summary" aria-labelledby="nodes-summary-title">
+            <div class="summary-heading">
+                <div><div class="summary-eyebrow">NODES</div><h2 id="nodes-summary-title">节点数</h2></div>
+                <span class="summary-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="8" y="2" width="8" height="6" rx="1.5"/><rect x="2" y="16" width="7" height="6" rx="1.5"/><rect x="15" y="16" width="7" height="6" rx="1.5"/><path d="M12 8v4M5.5 16v-4h13v4"/></svg></span>
             </div>
-        </div>
-        <div class="layui-col-lg3 layui-col-md4 layui-col-sm4 layui-col-xs6">
-            <div class="console-link-block" ew-title="CPU核数">
-                <img class="console-link-block-icon" src="/admin/images/cpu.png">
-                <div class="console-link-block-num" id="cpu">--</div>
-                <div class="console-link-block-text">CPU核数</div>
+            <div class="summary-value"><strong id="nodes">--</strong><span>台</span></div>
+            <div class="summary-footer"><span>集群节点总量</span><span class="summary-state">查询中</span></div>
+        </section>
+        <section class="summary-card summary-card--cpu is-loading" id="cpu-summary" aria-labelledby="cpu-summary-title">
+            <div class="summary-heading">
+                <div><div class="summary-eyebrow">CPU CAPACITY</div><h2 id="cpu-summary-title">CPU核数</h2></div>
+                <span class="summary-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 2v4m6-4v4M9 18v4m6-4v4M2 9h4m-4 6h4m12-6h4m-4 6h4"/></svg></span>
             </div>
-        </div>
-        <div class="layui-col-lg3 layui-col-md4 layui-col-sm4 layui-col-xs6">
-            <div class="console-link-block" ew-title="内存">
-                <img class="console-link-block-icon" src="/admin/images/mem.png">
-                <div class="console-link-block-num" id="memory">--</div>
-                <div class="console-link-block-text">内存</div>
+            <div class="summary-value"><strong id="cpu">--</strong><span>核</span></div>
+            <div class="summary-footer"><span>集群计算容量</span><span class="summary-state">查询中</span></div>
+        </section>
+        <section class="summary-card summary-card--memory is-loading" id="memory-summary" aria-labelledby="memory-summary-title">
+            <div class="summary-heading">
+                <div><div class="summary-eyebrow">MEMORY CAPACITY</div><h2 id="memory-summary-title">内存</h2></div>
+                <span class="summary-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="2" y="6" width="20" height="11" rx="2"/><path d="M6 17v3m4-3v3m4-3v3m4-3v3"/><rect x="5" y="9" width="5" height="5" rx=".5"/><rect x="14" y="9" width="5" height="5" rx=".5"/></svg></span>
             </div>
-        </div>
+            <div class="summary-value"><strong id="memory">--</strong><span>GiB</span></div>
+            <div class="summary-footer"><span>集群内存容量</span><span class="summary-state">查询中</span></div>
+        </section>
     </div>
 
-    <!-- 统计图表 -->
-    <div class="layui-row layui-col-space15">
-        <div class="layui-col-md4 layui-col-xs12">
-            <div class="layui-card">
-                <div class="layui-card-header">CPU利用率 <span id="cpu-status" style="color:#55A5EA;font-size: 16px;font-weight:bold;">
-                    &nbsp;&nbsp;数据异常</span></div>
-                <div class="layui-card-body">
-                    <div id="tjDivDay" style="height: 373px;"></div>
+    <!-- 真实数据仪表 -->
+    <div class="metrics-grid">
+        <section class="metric-panel metric-panel--cpu is-loading" id="cpu-panel" aria-labelledby="cpu-title">
+            <div class="metric-panel-head">
+                <div>
+                    <div class="metric-eyebrow"><span>01</span> PROCESSOR</div>
+                    <h2 id="cpu-title">CPU利用率</h2>
+                </div>
+                <span class="metric-status" id="cpu-status" role="status"><i aria-hidden="true"></i><span>查询中</span></span>
+            </div>
+            <div class="metric-gauge" id="cpu-gauge" role="img" aria-label="CPU利用率，正在查询">
+                <div class="metric-halo" aria-hidden="true"></div>
+                <svg viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+                    <circle class="gauge-ticks" cx="120" cy="120" r="109"/>
+                    <g class="gauge-orbit"><circle cx="120" cy="120" r="98"/></g>
+                    <circle class="gauge-track" cx="120" cy="120" r="84"/>
+                    <circle class="gauge-progress" cx="120" cy="120" r="84" pathLength="100" transform="rotate(-90 120 120)"/>
+                    <circle class="gauge-inner" cx="120" cy="120" r="70"/>
+                </svg>
+                <div class="metric-gauge-center">
+                    <div class="metric-value"><span id="cpu-rate">--</span><span class="metric-unit">%</span></div>
+                    <div class="metric-gauge-caption">集群计算负载</div>
+                    <span class="metric-signal" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
                 </div>
             </div>
-        </div>
-        <div class="layui-col-md4 layui-col-xs12">
-            <div class="layui-card">
-                <div class="layui-card-header">内存<span id="memory-status" style="color:#55A5EA;font-size: 16px;font-weight:bold;">
-                    &nbsp;&nbsp;数据异常</span></div>
-                <div class="layui-card-body">
-                    <div id="tjDivWeek" style="height: 373px;"></div>
+            <div class="metric-load" aria-hidden="true"><div class="metric-load-fill"></div></div>
+            <div class="metric-scale" aria-hidden="true"><span>0%</span><span>负载水平</span><span>100%</span></div>
+            <div class="metric-details">
+                <div><span>已用核心</span><strong id="cpu-detail-used">--</strong></div>
+                <div><span>总核心</span><strong id="cpu-detail-total">--</strong></div>
+            </div>
+        </section>
+        <section class="metric-panel metric-panel--memory is-loading" id="memory-panel" aria-labelledby="memory-title">
+            <div class="metric-panel-head">
+                <div>
+                    <div class="metric-eyebrow"><span>02</span> MEMORY</div>
+                    <h2 id="memory-title">内存</h2>
+                </div>
+                <span class="metric-status" id="memory-status" role="status"><i aria-hidden="true"></i><span>查询中</span></span>
+            </div>
+            <div class="metric-gauge" id="memory-gauge" role="img" aria-label="内存，正在查询">
+                <div class="metric-halo" aria-hidden="true"></div>
+                <svg viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+                    <circle class="gauge-ticks" cx="120" cy="120" r="109"/>
+                    <g class="gauge-orbit"><circle cx="120" cy="120" r="98"/></g>
+                    <circle class="gauge-track" cx="120" cy="120" r="84"/>
+                    <circle class="gauge-progress" cx="120" cy="120" r="84" pathLength="100" transform="rotate(-90 120 120)"/>
+                    <circle class="gauge-inner" cx="120" cy="120" r="70"/>
+                </svg>
+                <div class="metric-gauge-center">
+                    <div class="metric-value"><span id="memory-rate">--</span><span class="metric-unit">%</span></div>
+                    <div class="metric-gauge-caption">集群内存占用</div>
+                    <span class="metric-signal" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
                 </div>
             </div>
-        </div>
-        <div class="layui-col-md4 layui-col-xs12">
-            <div class="layui-card">
-                <div class="layui-card-header">GPU利用率<span id="gpu-status" style="color:#55A5EA;font-size: 16px;font-weight:bold;">
-                    &nbsp;&nbsp;数据异常</span></div>
-                <div class="layui-card-body">
-                    <div id="tjDivMonth" style="height: 373px;"></div>
+            <div class="metric-load" aria-hidden="true"><div class="metric-load-fill"></div></div>
+            <div class="metric-scale" aria-hidden="true"><span>0%</span><span>负载水平</span><span>100%</span></div>
+            <div class="metric-details">
+                <div><span>已用内存</span><strong id="memory-detail-used">--</strong></div>
+                <div><span>总内存</span><strong id="memory-detail-total">--</strong></div>
+            </div>
+        </section>
+        <section class="metric-panel metric-panel--gpu is-loading" id="gpu-panel" aria-labelledby="gpu-title">
+            <div class="metric-panel-head">
+                <div>
+                    <div class="metric-eyebrow"><span>03</span> ACCELERATOR</div>
+                    <h2 id="gpu-title">GPU利用率</h2>
+                </div>
+                <span class="metric-status" id="gpu-status" role="status"><i aria-hidden="true"></i><span>查询中</span></span>
+            </div>
+            <div class="metric-gauge" id="gpu-gauge" role="img" aria-label="GPU利用率，正在查询">
+                <div class="metric-halo" aria-hidden="true"></div>
+                <svg viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+                    <circle class="gauge-ticks" cx="120" cy="120" r="109"/>
+                    <g class="gauge-orbit"><circle cx="120" cy="120" r="98"/></g>
+                    <circle class="gauge-track" cx="120" cy="120" r="84"/>
+                    <circle class="gauge-progress" cx="120" cy="120" r="84" pathLength="100" transform="rotate(-90 120 120)"/>
+                    <circle class="gauge-inner" cx="120" cy="120" r="70"/>
+                </svg>
+                <div class="metric-gauge-center">
+                    <div class="metric-value"><span id="gpu-rate">--</span><span class="metric-unit">%</span></div>
+                    <div class="metric-gauge-caption">GPU 计算负载</div>
+                    <span class="metric-signal" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
                 </div>
             </div>
-        </div>
+            <div class="metric-load" aria-hidden="true"><div class="metric-load-fill"></div></div>
+            <div class="metric-scale" aria-hidden="true"><span>0%</span><span>负载水平</span><span>100%</span></div>
+            <div class="metric-details">
+                <div><span>当前利用率</span><strong id="gpu-detail-used">--</strong></div>
+                <div><span>数据状态</span><strong id="gpu-detail-total">--</strong></div>
+            </div>
+        </section>
     </div>
     <blockquote class="layui-elem-quote layui-text" style="margin-top: 15px;background: #fff;">
         AI大模型，支持内存、CPU、GPU等异构资源管理分配。
@@ -180,69 +148,8 @@
 </div>
 
 
-<script src="/component/echarts/echarts.min.js"></script>
-<script src="/component/echarts/echarts-liquidfill.min.js"></script>
-<script src="/component/echarts/echartsTheme.js"></script>
 #@footer()
-<script>
-    layui.use(['layer', 'jquery'], function () {
-        var $ = layui.jquery;
-        var myCharts1 = echarts.init(document.getElementById('tjDivDay'));
-        var myCharts2 = echarts.init(document.getElementById('tjDivWeek'), myEchartsTheme);
-        var myCharts3 = echarts.init(document.getElementById('tjDivMonth'), myEchartsTheme);
-
-        function available(value) {
-            return typeof value === 'number' && Number.isFinite(value) && value >= 0;
-        }
-
-        function format(value) {
-            return available(value) ? Number(value.toFixed(2)).toString() : '--';
-        }
-
-        function renderChart(chart, rate) {
-            chart.clear();
-            if (!available(rate)) return;
-            chart.setOption({
-                series: [{
-                    type: 'liquidFill',
-                    radius: '80%',
-                    data: [rate, rate, rate, rate],
-                    label: {
-                        formatter: function () { return (rate * 100).toFixed(2) + '%'; }
-                    },
-                    backgroundStyle: {borderWidth: 5, borderColor: '#55A5EA'},
-                    outline: {show: false}
-                }]
-            });
-        }
-
-        function render(data) {
-            $('#imageCount').text(format(data.imageCount));
-            $('#nodes').text(format(data.nodes));
-            $('#cpu').text(format(data.cpu));
-            $('#memory').text(available(data.memory) ? format(data.memory) + 'GiB' : '--');
-            $('#cpu-status').text(available(data.cpuRate) ? '' : '数据异常');
-            $('#memory-status').text(available(data.memoryUsed) && available(data.memory)
-                ? '\u00a0\u00a0' + format(data.memoryUsed) + ' / ' + format(data.memory) : '\u00a0\u00a0数据异常');
-            $('#gpu-status').text(available(data.gpuRate) ? '' : '数据异常');
-            renderChart(myCharts1, data.cpuRate);
-            renderChart(myCharts2, data.memRate);
-            renderChart(myCharts3, data.gpuRate);
-        }
-
-        $.getJSON('/api/v1/console').done(function (res) {
-            render(res.code === 200 && res.data ? res.data : {});
-        }).fail(function () {
-            render({});
-        });
-
-        window.onresize = function () {
-            myCharts1.resize();
-            myCharts2.resize();
-            myCharts3.resize();
-        };
-    });
-</script>
+<script src="/js/console-metrics.js"></script>
 </body>
 
 </html>
